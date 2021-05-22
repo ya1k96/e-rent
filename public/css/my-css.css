@@ -96,3 +96,8 @@ a:hover, a:focus {
 .vencimientos {
     width: 100%;
 }
+
+.avatar-img {
+    height: 4rem;
+    width: 4rem;
+}

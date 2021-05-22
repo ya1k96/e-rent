@@ -1,8 +1,13 @@
 const express = require('express');
 const app = new express();
 const mongoose= require('mongoose');
-const uri = "mongodb+srv://ale39:Alejandro39@up-art.5x5ah.mongodb.net/e-rent?retryWrites=true&w=majority";
-mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true});
+require('dotenv').config();
+
+const dbUser = process.env.DBUSER;
+const dbPassword = process.env.DBPASSWORD;
+const dbUrl = process.env.DBURL;
+
+mongoose.connect(`"mongodb+srv://${dbUser}:${dbPassword}@${dbUrl}"`, { useNewUrlParser: true, useUnifiedTopology: true});
 const db = mongoose.connection;
 
 db.once("open", function(){

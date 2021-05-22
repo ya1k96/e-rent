@@ -33,11 +33,12 @@
             <div class="card vencimientos">
                 <% if(data.contracts.length > 0) { %>
                     <% for(var i = 0; i < data.contracts.length; i++) {%>
-                        <div class="row">
-                            <p class="col-9 txt-form">
+                        <div class="row center midd-content">
+                            <img class="rounded-circle avatar-img pb-3 col-2" src="../icons/neutral-user.png" alt="">
+                            <p class="col-5 txt-form">
                                 <%= data.contracts[i].name + ' ' + data.contracts[i].surname %>
                             </p>                
-                            <span class="col-3 txt-form"> <%= data.contracts[i].pay_day + '/' + data.month %> </span>
+                            <span class="col-3 txt-form pb-3"> <%= data.contracts[i].pay_day + '/' + data.month %> </span>
                         </div>
                     <% }%>
 
