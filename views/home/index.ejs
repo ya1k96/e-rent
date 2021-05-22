@@ -1,0 +1,51 @@
+<%- include('../partials/head'); -%>
+<%- include('../partials/navbar'); -%>
+    <div class="row-s center midd-content dashboard">
+        <a href="/inquilinos">
+            <div class="card m-2 column margin-10">
+                <img src="./icons/users.png" alt="">
+                <p class="text-center">Inquilinos</p>            
+            </div>
+        </a>
+        <a href="#">
+            <div class="card m-2 column margin-10">
+                <img src="./icons/invoice-2.png" alt="">
+                <p class="text-center">Recibos</p>
+               
+            </div>
+        </a>
+        <a href="#">
+            <div class="card m-2 column margin-10">
+                <img src="./icons/invoice.png" alt="">
+                <p class="text-center">Facturas</p>
+            
+            </div>
+        </a>
+   
+    </div>
+
+    <div class="row-s m-4 center midd-content dashboard">
+        <div class="row">
+            <div class="col-12">
+                <p class="text-center">Proximos vencimientos</p>
+
+            </div>
+            <div class="card vencimientos">
+                <% if(data.contracts.length > 0) { %>
+                    <% for(var i = 0; i < data.contracts.length; i++) {%>
+                        <div class="row">
+                            <p class="col-9 txt-form">
+                                <%= data.contracts[i].name + ' ' + data.contracts[i].surname %>
+                            </p>                
+                            <span class="col-3 txt-form"> <%= data.contracts[i].pay_day + '/' + data.month %> </span>
+                        </div>
+                    <% }%>
+
+                <% } else { %>
+                    <p class="text-form">No hay proximos vencimientos</p>
+                <% }  %>
+            </div>
+
+        </div>
+    </div>
+<%- include('../partials/footer'); -%>

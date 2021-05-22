@@ -1,0 +1,98 @@
+body {    
+    background-color: #edeff1;
+}
+
+.card {
+    background-color: white;
+    padding: 24px 23px 20px;
+    position: relative;
+    border-radius: 6px;
+}
+
+.row-s {
+    display: flex;
+    flex-direction: row;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+}
+
+.midd-content {
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.center {
+    align-items: center;
+}
+
+p {
+    font-family: 'Poppins', sans-serif;
+}
+
+.icon-txt {
+    font-size: 80%;
+}
+
+.dashboard {
+    margin-top: 5%;
+}
+
+.margin-top-6 {
+    margin-top: 6%;
+}
+
+.margin-10 {
+    width: 10rem; height: 11rem;
+}
+
+.width-10 {
+    width: 40%;
+}
+
+@media (min-width: 300px) {
+    .width-10 {
+        width: 90%;
+    }
+}
+
+@media (min-width: 620px) {
+    .width-10 {
+        width: 40%;
+    }
+}
+
+.dashboard > a > .card:hover {
+    background-color: #b7defc;
+}
+/* .card > p:hover {
+    color: white;
+} */
+
+@media (min-width: 620px) {
+    .margin-10 {
+        height: 12rem;
+    }
+}
+
+a {
+    color: #34495e;
+}
+
+a:hover, a:focus {
+    color: white;
+}
+
+.txt-form {
+    font-size: 80%;
+}
+
+.txt-vencimientos {
+    font-size: 60%;
+}
+
+.vencimientos {
+    width: 100%;
+}
