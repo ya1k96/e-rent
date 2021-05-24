@@ -10,28 +10,36 @@
         <div class="card vencimientos">
             <% if(invoices.length > 0) {%>
 
-                <% for (var i=0; i < invoices.length; i++) { %>
-                    <div class="row center midd-content">
-                        <p class="col-5 txt-form">
-                            Monto: $<%= invoices[i].total %>
-                        </p>                
-                        <span class="col-5 txt-form pb-3"> 
-                            <p class="text-center icon-txt">Pagado: 
-                                <% if(invoices[i].payed) { %>
-                                    <span class="badge badge-pill badge-success">Si</span>
-                                <% } else { %>                            
-                                    <span class="badge badge-pill badge-warning">No</span>
-                                <% } %>
-                            </p>
-                        </span>
-                    </div>
-                              
+                <div class="row ">
+                     <% for (var i=0; i < invoices.length; i++) { %>
+                        <div class="col-12">
+                            <p class="txt-form">
+                                <%= invoices[i].contract_id.name %> <br>
+                                <%= invoices[i].contract_id.surname %> 
+                            </p>                
+                            <p class="txt-form">
+                                Monto: $<%= invoices[i].total %>
+                            </p>                
+                            <span class="txt-form pb-3"> 
+                                <p class="text-center icon-txt">
+                                    <% if(invoices[i].payed) { %>
+                                        <span class="badge badge-pill badge-success">Pagado</span>
+                                    <% } %>                            
+                                </p>
+                            </span>
+                            <button onclick="createPreference()">pagar</button>
+                        </div>
+                        <% if( (i +1 ) < invoices.length ) { %>
+                            <hr>   
+                        <% } %>
+                </div>
+
                 <% } %>
         
             <% } else { %>
         
             <% } %>
-            
+            <button id="button-checkout"></button>
         </div>
 
     </div>     

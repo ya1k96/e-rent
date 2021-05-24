@@ -62,16 +62,28 @@ module.exports = (app) => {
     });
 
     app.get('/invoice/:id', async (req, res) => {
-        const id = req.params.id;
+      const id = req.params.id;
 
-        const invoice = invoiceModel.find();
+      const invoice = invoiceModel.find();
 
-        const documentName = invoicePDF()
+      const documentName = invoicePDF()
 
-        setTimeout(() => {
-          return res.sendFile(path.resolve(__dirname, './document.pdf'));
-        }, 1500);
-      
-      });
-      
+      setTimeout(() => {
+        return res.sendFile(path.resolve(__dirname, './document.pdf'));
+      }, 1500);
+    
+    });
+
+    app.get('/invoice', async (req, res) => {
+      const invoices = await invoiceModel.find({})
+      .populate('contract_id')
+      .limit(3);
+      return res.render('facturas/index', {invoices});
+    });
+
+    app.get('/payment', async (req, res) => {
+      const invoices = await invoiceModel.find({});
+      return res.render('facturas/index', {invoices});
+    });
+    
 }

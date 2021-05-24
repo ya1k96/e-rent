@@ -56,6 +56,7 @@ db.on("error", function(er){
     })
 })
 const homeController = require('./controllers/homeController');
+const paymentsController = require('./controllers/payments');
 const contract = require('./models/contract');
 
 app.use(express.json());
@@ -65,6 +66,7 @@ app.set('view engine', 'ejs');
 
 //Rutas
 homeController(app);
+paymentsController(app);
 
 app.listen(3000,() => {
 
