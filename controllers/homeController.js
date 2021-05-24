@@ -1,4 +1,5 @@
 const invoiceModel = require('../models/invoice');
+const paymentsModel = require('../models/payment');
 const contractModel = require('../models/contract');
 const invoicePDF = require('../functions/invoice');
 

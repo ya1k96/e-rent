@@ -1,0 +1,41 @@
+<%- include('../partials/head'); -%>
+<%- include('../partials/navbar'); -%>
+
+<div class="row-s center midd-content margin-top-6">               
+    <h4>Facturas generadas</h4>
+</div>
+
+<div class="row-s midd-content mt-3">       
+    <div class="row">        
+        <div class="card vencimientos">
+            <% if(invoices.length > 0) {%>
+
+                <% for (var i=0; i < invoices.length; i++) { %>
+                    <div class="row center midd-content">
+                        <p class="col-5 txt-form">
+                            Monto: $<%= invoices[i].total %>
+                        </p>                
+                        <span class="col-5 txt-form pb-3"> 
+                            <p class="text-center icon-txt">Pagado: 
+                                <% if(invoices[i].payed) { %>
+                                    <span class="badge badge-pill badge-success">Si</span>
+                                <% } else { %>                            
+                                    <span class="badge badge-pill badge-warning">No</span>
+                                <% } %>
+                            </p>
+                        </span>
+                    </div>
+                              
+                <% } %>
+        
+            <% } else { %>
+        
+            <% } %>
+            
+        </div>
+
+    </div>     
+                
+</div>
+                
+<%- include('../partials/footer'); -%>
