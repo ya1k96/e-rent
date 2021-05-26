@@ -93,11 +93,72 @@ a:hover, a:focus {
     font-size: 60%;
 }
 
+
 .vencimientos {
-    width: 100%;
+    width: 40rem;
+}
+@media (min-width: 620px) and (max-width: 920px) {
+    .vencimientos {
+        width: 40rem;
+    }
+}
+
+@media (min-width: 300px) and (max-width: 620px) {
+    .vencimientos {
+        width: 15rem;
+    }
+}
+
+.font-s-90 {
+    font-size: 90%;
 }
 
 .avatar-img {
     height: 4rem;
     width: 4rem;
+}
+
+@media (min-width: 992px) {
+    .navbar-expand-lg .navbar-toggler {
+        display: block;
+    }
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        position: relative;
+        flex-wrap: wrap;
+    }
+}
+
+/* Estilos para motores Webkit y blink (Chrome, Safari, Opera... )*/
+
+#proximos-vencimientos {
+    height: 15rem; overflow: scroll;
+    flex-flow: column;
+    padding: 4px;
+}
+#proximos-vencimientos::-webkit-scrollbar {
+    -webkit-appearance: none;
+}
+
+#proximos-vencimientos::-webkit-scrollbar:vertical {
+    width:10px;
+}
+
+#proximos-vencimientos::-webkit-scrollbar-button:increment,#proximos-vencimientos::-webkit-scrollbar-button {
+    display: none;
+} 
+
+#proximos-vencimientos::-webkit-scrollbar:horizontal {
+    height: 10px;
+}
+
+#proximos-vencimientos::-webkit-scrollbar-thumb {
+    background-color: #797979;
+    border-radius: 20px;
+    border: 2px solid #f1f2f3;
+}
+
+#proximos-vencimientos::-webkit-scrollbar-track {
+    border-radius: 10px;  
 }

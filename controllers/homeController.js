@@ -7,12 +7,28 @@ module.exports = (app) => {
     app.get('/', async (req, res) => {
       let day = (new Date()).getDate();
       let month = (new Date()).getMonth() + 1;
-      let contracts = await contractModel.find()
-      .where('pay_day').gt(day);
+      let contracts = await contractModel.find({}).populate({
+        path: 'invoices'       
+    })
+
+    let renters = [];
+    contracts.forEach((contract) => {
+      let invoices = contract.invoices.filter(invoice => invoice.payed != true);
+      let renter = {
+        invoices,
+        name: contract.name + ' ' + contract.surname,
+        pay_day: contract.pay_day        
+      };
+      if(invoices.length > 0) {
+        renters.push(renter);
+      }
+    });
+
       let data = {
         month,
-        contracts
+        renters
       };
+      console.log(renters)
       return res.render('home/index', {data});
     });
 
@@ -82,7 +98,9 @@ module.exports = (app) => {
     });
 
     app.get('/payment', async (req, res) => {
-      const invoices = await invoiceModel.find({});
+      const month = (req.query.month ? req.query.month : new Date().getMonth() + 1);
+      
+      const invoices = await invoiceModel.find({month: month});
       return res.render('facturas/index', {invoices});
     });
     

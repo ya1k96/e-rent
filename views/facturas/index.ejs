@@ -5,43 +5,43 @@
     <h4>Facturas generadas</h4>
 </div>
 
-<div class="row-s midd-content mt-3">       
-    <div class="row">        
-        <div class="card vencimientos">
-            <% if(invoices.length > 0) {%>
-
-                <div class="row ">
-                     <% for (var i=0; i < invoices.length; i++) { %>
-                        <div class="col-12">
-                            <p class="txt-form">
+<div class="row-s midd-content m-4">       
+    <div class="card p-1">
+        <% if(invoices.length > 0) {%>
+            <table class="table vencimientos table-sm font-s-90">
+                <thead class="thead-light">
+                    <th>Nombre</th>
+                    <th>Monto</th>
+                    <th>Mes</th>
+                    <th>Pagado</th>
+                </thead>
+                <tbody>
+                    <% for (var i=0; i < invoices.length; i++) { %>
+                        <tr>
+                            <td>
                                 <%= invoices[i].contract_id.name %> <br>
                                 <%= invoices[i].contract_id.surname %> 
-                            </p>                
-                            <p class="txt-form">
-                                Monto: $<%= invoices[i].total %>
-                            </p>                
-                            <span class="txt-form pb-3"> 
-                                <p class="text-center icon-txt">
-                                    <% if(invoices[i].payed) { %>
-                                        <span class="badge badge-pill badge-success">Pagado</span>
-                                    <% } %>                            
-                                </p>
-                            </span>
-                            <button onclick="createPreference()">pagar</button>
-                        </div>
-                        <% if( (i +1 ) < invoices.length ) { %>
-                            <hr>   
-                        <% } %>
-                </div>
-
+                            </td>
+                            <td>
+                                $ <%= invoices[i].total %>
+                            </td>
+                            <td>
+                                <%= invoices[i].month %>
+                            </td>
+                            <td>
+                                <% if(invoices[i].payed) { %>
+                                    <span class="badge badge-pill badge-success">Si</span>
+                                <% } %>                                                            
+                            </td>
+                        </tr>                    
+    
                 <% } %>
-        
-            <% } else { %>
-        
-            <% } %>
-            <button id="button-checkout"></button>
-        </div>
-
+                </tbody>
+            </table>
+    
+        <% } else { %>
+    
+        <% } %>
     </div>     
                 
 </div>

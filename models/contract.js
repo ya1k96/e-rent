@@ -35,7 +35,13 @@ const contractSchema = new Schema({
     increment_porc: {
         type: Number,
         required: true
-    }
+    },
+    invoices: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'invoices'
+        }
+    ]
 });
 
 module.exports = mongoose.model('contracts', contractSchema);

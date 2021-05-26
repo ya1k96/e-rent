@@ -33,6 +33,9 @@ agenda.define("create invoice", async (job) => {
             };
 
             await invoice.save();
+
+            contract.invoices.push(invoice);
+            await contract.save();
         })
     }
 });
