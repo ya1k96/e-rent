@@ -13,10 +13,11 @@ module.exports = (app) => {
 
     let renters = [];
     contracts.forEach((contract) => {
-      let invoices = contract.invoices.filter(invoice => invoice.payed != true);
+      let invoices = contract.invoices.filter(invoice => invoice.payed == true);
       let renter = {
         invoices,
         name: contract.name + ' ' + contract.surname,
+        id: contract._id,
         pay_day: contract.pay_day        
       };
       if(invoices.length > 0) {

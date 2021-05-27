@@ -1,7 +1,6 @@
 <%- include('../partials/head'); -%>
 <%- include('../partials/navbar'); -%>
-
-<div class="row-s center midd-content margin-top-6">               
+<div class="row-s center midd-content m-0">               
     <h4>Facturas generadas</h4>
 </div>
 
@@ -45,5 +44,16 @@
     </div>     
                 
 </div>
-                
+
 <%- include('../partials/footer'); -%>
+<script>
+     $(document).ready( function () {
+         
+        $('.table').DataTable({
+            responsive: true,
+            language: {
+                url: './css/vendor/datatables-es-ar.json' //Ubicacion del archivo con el json del idioma.
+            }
+        });
+    } );
+</script>            

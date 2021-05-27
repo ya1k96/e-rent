@@ -68,7 +68,9 @@
                 <p>Elegi un inquilino</p>
                 <select class="custom-select">
                     <option selected>Elegir</option>
-                    <option value="1">One</option>
+                    <% for(var i = 0; i < data.renters.length; i++) {%>
+                        <option value="<%= data.renters[i].id%>"><%= data.renters[i].name%></option>
+                    <% } %>
                 </select>
             </div>
             <div class="modal-footer">

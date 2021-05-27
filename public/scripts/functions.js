@@ -57,4 +57,5 @@ function createPreference() {
      document.querySelector("#button-checkout").appendChild(script);
  }
 
+
  
