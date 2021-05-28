@@ -13,7 +13,7 @@ module.exports = (app) => {
 
     let renters = [];
     contracts.forEach((contract) => {
-      let invoices = contract.invoices.filter(invoice => invoice.payed == true);
+      let invoices = contract.invoices.filter(invoice => invoice.payed != true);
       let renter = {
         invoices,
         name: contract.name + ' ' + contract.surname,
@@ -89,6 +89,15 @@ module.exports = (app) => {
         return res.sendFile(path.resolve(__dirname, './document.pdf'));
       }, 1500);
     
+    });
+
+    app.get('/invoice/detail/:id', async (req, res) => {
+      const id = req.params.id;
+      const invoice = await invoiceModel.findById(id)
+      .populate({path: 'contract_id'});
+
+      console.log(invoice)
+      return res.render('facturas/detail', {invoice});
     });
 
     app.get('/invoice', async (req, res) => {

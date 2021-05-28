@@ -1,0 +1,54 @@
+<%- include('../partials/head'); -%>
+<%- include('../partials/navbar'); -%>
+    <h4 class="text-center">Factura detalle</h4>
+    <div class="container row-s center midd-content" style="height: 55%;">
+        <div class="card">
+            <div class="row">
+                <div class="col-md-6 col-12 offset-md-1">
+                    <p class="text-invoice-detail">
+                        Total a pagar:
+                        <%= invoice.total %>
+
+                    </p>
+                    <p class="text-invoice-detail">
+                        Pagado
+                        <%= invoice.payed %>
+
+                    </p>
+                    <p class="text-invoice-detail">
+                        Mes
+                        <span id="invoice-month">
+                            <%= invoice.createdAt %>
+                        </span>
+
+                    </p>
+                </div>
+                <div class="col-md-5 col-12">
+                    <p class="text-muted" style="font-size: 70%;">Sobre el inquilino</p>
+                    <%= invoice.contract_id.name + ' ' + invoice.contract_id.surname %>  <br>              
+                    <img src="/icons/neutral-user.png" alt="" style="height: 50%; width: 50%;">
+                    <p  class="text-invoice-detail">
+                        Inicio del contrato:
+                        <span id="date-field">
+                            <%= invoice.contract_id.begin %>                
+                        </span>
+                        
+                    </p>
+                </div>
+            </div>            
+        </div>
+    </div>
+<%- include('../partials/footer'); -%>
+<script>
+    $(function() {
+        moment().locale('es');
+        let invoiceMonth = $("#invoice-month");
+        let dateField = $("#date-field");
+        
+        let momentDate = moment(dateField.html()).format("ll");
+        let momentMonth = moment(parseInt(invoiceMonth.html())).format();
+        console.log(momentMonth)
+        dateField.html(momentDate);
+        invoiceMonth.html(momentMonth);
+    })
+</script>

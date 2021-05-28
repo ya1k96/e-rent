@@ -11,7 +11,7 @@ const dbPassword = process.env.DBPASSWORD;
 const dbUrl = process.env.DBURL;
 const mongoConnectionString = `mongodb+srv://${dbUser}:${dbPassword}@${dbUrl}`;
 
-mongoose.connect(mongoConnectionString, { useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(mongoConnectionString, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
 
 const agenda = new Agenda({ db: { address: mongoConnectionString } });
@@ -53,10 +53,7 @@ db.once("open", function(){
 
 db.on("error", function(er){
     console.log("No se pudo conectar a la base de datos")
-    console.log(er);
-    app.get('/', function(req, res) {
-        res.render('events/error');
-    })
+    console.log(er);   
 })
 const homeController = require('./controllers/homeController');
 const paymentsController = require('./controllers/payments');

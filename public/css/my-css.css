@@ -1,5 +1,10 @@
+html {
+    height: 100%;
+}
+
 body {    
     background-color: #edeff1;
+    height: 100%;
 }
 
 .card {
@@ -133,7 +138,9 @@ a:hover, a:focus {
 /* Estilos para motores Webkit y blink (Chrome, Safari, Opera... )*/
 
 #proximos-vencimientos {
-    height: 15rem; overflow: scroll;
+    height: auto; 
+    max-height: 15rem;
+    overflow: scroll;
     flex-flow: column;
     padding-top: 1rem;
 }
@@ -165,5 +172,15 @@ a:hover, a:focus {
 }
 
 #proximos-vencimientos > .row {
-    justify-content: flex-end;
+    justify-content: space-around;
+}
+
+.total {
+    font-size: 85%;
+    color: rgb(102, 102, 102);
+}
+
+.text-invoice-detail {
+    font-size: 85%;
+    margin: 0;
 }

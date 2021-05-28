@@ -7,13 +7,13 @@
                 <p class="text-center">Inquilinos</p>            
             </div>
         </a>
-        <a href="#" data-toggle="modal" data-target="#generar-recibo">
+        <!-- <a href="#" data-toggle="modal" data-target="#generar-recibo">
             <div class="card m-2 column margin-10">
                 <img src="./icons/invoice-2.png" alt="">
                 <p class="text-center">Recibos</p>
                
             </div>
-        </a>
+        </a> -->
         <a href="/invoice">
             <div class="card m-2 column margin-10">
                 <img src="./icons/invoice.png" alt="">
@@ -30,19 +30,27 @@
                 <p class="text-center">Proximos vencimientos</p>
 
             </div>
-            <div class="col-12 card center midd-content" id="proximos-vencimientos">
+            <div class="col-12 card" id="proximos-vencimientos">
                 <% if(data.renters.length > 0) { %>
                     <% for(var i = 0; i < data.renters.length; i++) {%>
                         <% if(data.renters[i].invoices.length > 0) { %>
                             <% for(var j = 0; j < data.renters[i].invoices.length; j++) {%>
-                                <div class="row" style="width: 95%; height: 95%;">
-                                    <img class="rounded-circle avatar-img pb-3 col-2" src="../icons/neutral-user.png" alt="">
-                                    <p class="col-5 txt-form">
-                                        <%= data.renters[i].name %>
+                                <div class="row center">
+                                    <img class="rounded-circle avatar-img col-2" src="../icons/neutral-user.png" alt="">
+                                    <p class="col-3 txt-form">
+                                        <%= data.renters[i].name %> <br>
+                                        <span class="total">$ <%= data.renters[i].invoices[j].total %></span>
                                     </p>                
-                                    <span class="col-3 txt-form pb-3"> <%= data.renters[i].pay_day + '/' + data.month %> </span>
-                                </div>
+                                    <span class="col-3 txt-form pb-3 text-center"> <%= data.renters[i].pay_day + '/' + data.month %> </span>
+                                    <div class="col-2 mb-4">
+                                        <button class="btn btn-outline-info"> <a href="/invoice/detail/<%= data.renters[i].invoices[j]._id %>">ver</a></button>
+                                    </div>
+                                </div>                                
+                                
                             <% }%>
+                        <% }%>
+                        <% if(i < (data.renters.length - 1) ) { %>
+                            <hr>
                         <% }%>
                     <% }%>
 
@@ -51,33 +59,6 @@
                 <% }  %>
             </div>
 
-        </div>
-    </div>
-
-    <!-- Modal -->
-    <div class="modal" id="generar-recibo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Crear recibo</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Elegi un inquilino</p>
-                <select class="custom-select">
-                    <option selected>Elegir</option>
-                    <% for(var i = 0; i < data.renters.length; i++) {%>
-                        <option value="<%= data.renters[i].id%>"><%= data.renters[i].name%></option>
-                    <% } %>
-                </select>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Ok</button>
-            </div>
-            </div>
         </div>
     </div>
 <%- include('../partials/footer'); -%>
