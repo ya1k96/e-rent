@@ -68,7 +68,7 @@ app.set('view engine', 'ejs');
 homeController(app);
 paymentsController(app);
 
-app.listen(3000,() => {
+app.listen((process.env.PORT||3000),() => {
 
     console.log('SERVER RUN')
 })
