@@ -10,7 +10,7 @@ const dbUser = process.env.DBUSER;
 const dbPassword = process.env.DBPASSWORD;
 const dbUrl = process.env.DBURL;
 const mongoConnectionString = `mongodb+srv://${dbUser}:${dbPassword}@${dbUrl}`;
-
+console.log(mongoConnectionString)
 mongoose.connect(mongoConnectionString, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
 

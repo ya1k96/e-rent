@@ -1,54 +1,114 @@
 <%- include('../partials/head'); -%>
+<style>
+   h6 {
+       font-size: 1.2rem;
+   }
+    @media (max-width: 765px) {
+        #inquilino-card {
+            padding-top: 2rem !important;
+        }
+        .container.row-s.center.midd-content {
+            width: 95% !important;
+        }
+    }
+</style>
 <%- include('../partials/navbar'); -%>
     <h4 class="text-center">Factura detalle</h4>
-    <div class="container row-s center midd-content" style="height: 55%;">
+    <div class="container row-s center midd-content" style="height: 55%; width: 55%;">
         <div class="card">
             <div class="row">
-                <div class="col-md-6 col-12 offset-md-1">
-                    <p class="text-invoice-detail">
-                        Total a pagar:
-                        <%= invoice.total %>
-
-                    </p>
-                    <p class="text-invoice-detail">
-                        Pagado
-                        <%= invoice.payed %>
-
-                    </p>
-                    <p class="text-invoice-detail">
-                        Mes
+                <div class="col-md-6 col-12 pl-4">
+                    <h6 class="font-weight-bold">Mes de
                         <span id="invoice-month">
                             <%= invoice.createdAt %>
                         </span>
-
+                    </h6>
+                    <p class="text-invoice-detail">
+                        Total a pagar: 
+                        <%= invoice.total %> ARS
                     </p>
+                    <% if(!invoice.payed) {%> 
+                        <p class="text-invoice-detail" >
+                            Vence
+                            <span id="expiration">
+                                <%= invoice.expiration %>
+                            </span>
+                        </p>
+                    <% } %> 
+                    <br>    
+
+                    <button class="btn btn-success" style="cursor: text;"
+                    <% if(!invoice.payed) {%> <%= 'disabled' %> <% } %> 
+                    ><span class="fui-check"></span> Pagado</button>
+                    <% if(invoice.payed) {%> 
+                        <button class="btn btn-outline-info"><span class="fui-clip"></span> 
+                            <a href="/payments/detail/<%= invoice._id + '/' +invoice.payment._id %>">Descargar recibo</a>
+                        </button>
+                    <% } %>
+                    
                 </div>
-                <div class="col-md-5 col-12">
-                    <p class="text-muted" style="font-size: 70%;">Sobre el inquilino</p>
+                <div class="col-md-5 offset-md-1 col-12" id="inquilino-card">
+                    <p class="text-muted m-0" style="font-size: 70%;">Sobre el inquilino</p>
                     <%= invoice.contract_id.name + ' ' + invoice.contract_id.surname %>  <br>              
                     <img src="/icons/neutral-user.png" alt="" style="height: 50%; width: 50%;">
                     <p  class="text-invoice-detail">
                         Inicio del contrato:
-                        <span id="date-field">
-                            <%= invoice.contract_id.begin %>                
-                        </span>
+                        <strong>
+                            <span id="date-field" class="font-weight-bold">
+                                <%= invoice.contract_id.begin %>                
+                            </span>
+                        </strong>
                         
                     </p>
+                    <input type="hidden" id="id-invoice" value="<%= invoice._id %>">
                 </div>
+                <%if(!invoice.payed) {%> 
+                    <div class="col-12 col-md-8 offset-md-2 mt-3">
+                        <button class="btn btn-outline-info btn-lg btn-block" onclick="newPayment()">Generar recibo</button>
+                    </div>
+                <% } %>
             </div>            
         </div>
     </div>
 <%- include('../partials/footer'); -%>
 <script>
     $(function() {
-        moment().locale('es');
+        moment.locale('es');
         let invoiceMonth = $("#invoice-month");
         let dateField = $("#date-field");
+        let expirationField = $("#expiration");
         
         let momentDate = moment(dateField.html()).format("ll");
-        let momentMonth = moment(parseInt(invoiceMonth.html())).format();
+        let momentMonth = moment(invoiceMonth.html()).format("MMMM");
+        let momentexpiration = moment(expirationField.html()).fromNow();
         console.log(momentMonth)
         dateField.html(momentDate);
         invoiceMonth.html(momentMonth);
+        expirationField.html(momentexpiration);        
     })
+
+    function newPayment() {
+        let idInvoice = $("#id-invoice").val();
+        Swal.fire({
+            title: 'Generar recibo',
+            text: 'Una vez que generes el recibo, la factura pasa a estar pagada.\n ¿Continuar?',
+            showCancelButton: true,
+            confirmButtonText: `Si`,
+            cancelButtonText: `Cancelar`
+            }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                $.post('/payments/create/' + idInvoice, function(data) {
+                    if(data.ok) {
+                        window.location.href = `/payments/detail/${idInvoice}/${data.id_payment}`;
+                    } else {
+                        Swal.fire('Error', data.msg, 'info')
+                    }
+                })
+                Swal.fire('Perfecto!', '', 'success')
+            } else if (result.isDenied) {
+                return;
+            }
+        })
+    }
 </script>

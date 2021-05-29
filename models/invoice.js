@@ -25,6 +25,10 @@ const invoiceSchema = new Schema({
   expiration: {
       type: Date,
       required: true
+  },
+  payment: {
+      type: Schema.Types.ObjectId,
+      ref: 'payments'
   }
 }, {
     timestamps: true

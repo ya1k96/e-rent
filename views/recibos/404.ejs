@@ -1,0 +1,19 @@
+<%- include('../partials/head'); -%>
+<%- include('../partials/navbar'); -%>
+<style>
+    img {
+        height: 5rem;
+        width: 5rem;
+        align-self: center;
+    }
+    .column-content {
+        flex-direction: column !important;
+    }
+</style>
+<div class="container row-s center midd-content column-content" style="height: 55%; width: 55%;">
+        <h2>Error</h2>
+        <h4 class="text-center">Lo siento, este recibo no existe.</h4>    
+        <br>
+        <img src="/icons/hidden-file.png" alt="">    
+</div>
+<%- include('../partials/footer'); -%>

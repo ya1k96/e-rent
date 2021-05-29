@@ -1,1 +1,1 @@
-GET up-articulos.herokuapp.com
+POST http://localhost:3000/payments/create/60ab07157ad9450c30afd516

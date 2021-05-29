@@ -1,49 +1,7 @@
 const fs = require("fs");
+const path = require('path');
 const PDFDocument = require("pdfkit");
 const uuid = require('uuid');
-
-/**
- * Generar factura de un inquilino.
- * @constructor
- * @param {JSON} personInfo - Datos de la persona {
- *  name: "Marisa",
-      address: "DR Valenzuela",
-      city: "San Cosme",
-      state: "Corrientes",
-      country: "Argentina",
-      postal_code: 3412
- * }.
- * @param {String} billingDate - Fecha de pago.
- * @param {Number} monthPayed - Mes pagado.
- * @param {Number} interest - Interes generado por mora.
- */
-  let getPDF = (personInfo, price, billingDate, monthPayed, interest = 0) => {
-    const invoiceDetail = {
-      personInfo,
-      items: {
-          description: "Mes correspondiente a " + monthPayed,
-          price
-      },
-      total: total + ((interest/100) * total),
-      order_number: 1234222,
-      header:{
-          company_name: "",
-          company_logo: "logo.png",
-          company_address: "Documento no valido como factura"
-      },
-      footer:{
-        text: "data in rest"
-      },
-      currency_symbol:"ARS", 
-      date: {
-        billingDate
-      }
-    };
-    let documentName = `${billingDate}-${personInfo.name}.pdf`;
-    invoice(invoiceDetail, documentName);
-  
-    return documentName;
-  }
 
 let invoice = (invoice, path) => {
   let doc = new PDFDocument({ size: "A4", margin: 40 });
@@ -89,15 +47,16 @@ let customerInformation = (doc, invoice)=>{
     doc.fontSize(10)
     .text("Nro Recibo:", 50, customerInformationTop)
     .font("Helvetica-Bold")
-    .text(invoice.order_number, 150, customerInformationTop)
+    .text(invoice.order_number, 110, customerInformationTop)
     .font("Helvetica")
     .text("Fecha:", 50, customerInformationTop + 15)
-    .text(invoice.date.billing_date, 150, customerInformationTop + 15)
+    .text(invoice.date.billingDate, 110, customerInformationTop + 15)
     // .text("Due Date:", 50, customerInformationTop + 30)
     // .text(invoice.date.due_date,150,customerInformationTop + 30)
 
     .font("Helvetica-Bold")
-    .text(invoice.personInfo.name, 300, customerInformationTop)
+    .text("Nombre y apellido: ", 300, customerInformationTop)
+    .text(invoice.personInfo.name, 400, customerInformationTop)
     .font("Helvetica")
     .text(invoice.personInfo.address, 300, customerInformationTop + 15)
     .text(
@@ -124,7 +83,7 @@ let invoiceTable = (doc, invoice) => {
     doc,
     invoiceTableTop,
     "Detalle",
-    // "Total"
+    "Subtotal"
     // "Item",
     // "Unit Cost",
     // "Quantity",s
@@ -139,10 +98,10 @@ let invoiceTable = (doc, invoice) => {
       doc,
       position,
       item.description,
+      item.price, 
     //   item.item,
     //   formatCurrency(item.price, currencySymbol),
     //   item.quantity,
-    //   formatCurrency(applyTaxIfAvailable(item.price), currencySymbol), 
     //   checkIfTaxAvailable(item.tax)
     );
 
@@ -265,4 +224,4 @@ let companyAddress = (doc, address) => {
 }
 
 
-module.exports = getPDF;
+module.exports = invoice;

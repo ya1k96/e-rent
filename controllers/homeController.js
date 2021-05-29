@@ -2,6 +2,7 @@ const invoiceModel = require('../models/invoice');
 const paymentsModel = require('../models/payment');
 const contractModel = require('../models/contract');
 const invoicePDF = require('../functions/invoice');
+const invoice = require('../models/invoice');
 
 module.exports = (app) => {
     app.get('/', async (req, res) => {
@@ -29,7 +30,6 @@ module.exports = (app) => {
         month,
         renters
       };
-      console.log(renters)
       return res.render('home/index', {data});
     });
 
@@ -78,24 +78,24 @@ module.exports = (app) => {
 
     });
 
-    app.get('/invoice/:id', async (req, res) => {
-      const id = req.params.id;
+    // app.get('/invoice/:id', async (req, res) => {
+    //   const id = req.params.id;
 
-      const invoice = invoiceModel.find();
+    //   const invoice = invoiceModel.find();
 
-      const documentName = invoicePDF()
+    //   const documentName = invoicePDF()
 
-      setTimeout(() => {
-        return res.sendFile(path.resolve(__dirname, './document.pdf'));
-      }, 1500);
+    //   setTimeout(() => {
+    //     return res.sendFile(path.resolve(__dirname, './document.pdf'));
+    //   }, 1500);
     
-    });
+    // });
 
     app.get('/invoice/detail/:id', async (req, res) => {
       const id = req.params.id;
       const invoice = await invoiceModel.findById(id)
-      .populate({path: 'contract_id'});
-
+      .populate(['contract_id','payment']);
+      
       console.log(invoice)
       return res.render('facturas/detail', {invoice});
     });
@@ -104,13 +104,6 @@ module.exports = (app) => {
       const invoices = await invoiceModel.find({})
       .populate('contract_id')
       .limit(3);
-      return res.render('facturas/index', {invoices});
-    });
-
-    app.get('/payment', async (req, res) => {
-      const month = (req.query.month ? req.query.month : new Date().getMonth() + 1);
-      
-      const invoices = await invoiceModel.find({month: month});
       return res.render('facturas/index', {invoices});
     });
     

@@ -184,3 +184,16 @@ a:hover, a:focus {
     font-size: 85%;
     margin: 0;
 }
+
+@media (max-width: 620px) {
+    .rounded-circle.avatar-img.col-2 {
+        height: 50%;
+        width: 60%;
+    }
+}
+
+@media (max-width: 350px) {
+    .navbar-brand{
+        width: 30%;
+    }
+}

@@ -14,18 +14,13 @@ const paymentSchema = new Schema({
        type: Number,
        required: true
    },
-   payed: {
-       type: Boolean,
-       default: false
-   },
-   mora: {
-       type: Boolean,
-       default: false
-   },
    interest: {
        type: Number,
        default: 0
+   },
+   doc_url: {
+       type: String
    }
-});
+}, {timestamps: true});
 
 module.exports = mongoose.model('payments', paymentSchema);
