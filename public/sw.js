@@ -7,7 +7,6 @@ const assets = [
   "/public/css/jquery.dataTables.min.css",
   "/public/scripts/jquery-3.3.1.min.js",
   "https://unpkg.com/popper.js@1.14.1/dist/umd/popper.min.js",
-  "https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js",
   "/public/scripts/flat-ui.js",
   "/public/scripts/jquery.dataTables.min.js",
   "/public/scripts/moment.js",
