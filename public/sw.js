@@ -1,17 +1,17 @@
 const staticDevCoffee = "eRent"
 const assets = [
   "/",
-  "/public/css/vendor/bootstrap.min.css",
-  "/public/css/flat-ui.css",
-  "/public/css/my-css.css",
-  "/public/css/jquery.dataTables.min.css",
-  "/public/scripts/jquery-3.3.1.min.js",
+  "./css/vendor/bootstrap.min.css",
+  "./css/flat-ui.css",
+  "./css/my-css.css",
+  "./css/jquery.dataTables.min.css",
+  "./scripts/jquery-3.3.1.min.js",
   "https://unpkg.com/popper.js@1.14.1/dist/umd/popper.min.js",
-  "/public/scripts/flat-ui.js",
-  "/public/scripts/jquery.dataTables.min.js",
-  "/public/scripts/moment.js",
-  "/public//cdn.jsdelivr.net/npm/sweetalert2@11",
-  "/public/scripts/functions.js",
+  "./scripts/flat-ui.js",
+  "./scripts/jquery.dataTables.min.js",
+  "./scripts/moment.js",
+  "//cdn.jsdelivr.net/npm/sweetalert2@11",
+  "./scripts/functions.js",
   "/scripts/my-script.js"
 ]
 
