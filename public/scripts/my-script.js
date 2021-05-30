@@ -1,6 +1,8 @@
 $(function() {
   moment.locale('es');
 
+  $("#loader").fadeOut();
+
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", function() {
       navigator.serviceWorker
