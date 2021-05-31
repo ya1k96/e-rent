@@ -127,7 +127,7 @@ userController(app, firebase);
 homeController(app, firebase);
 paymentsController(app, firebase);
 
-app.listen(3000,() => {
+app.listen((process.env.PORT||3000),() => {
 
     console.log('SERVER RUN')
 })
