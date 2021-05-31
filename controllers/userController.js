@@ -33,7 +33,6 @@ const usersModel = require('../models/user');
       // Sign in with credential from the Google user.
       firebase.auth().signInWithCredential(credential)
       .then(async (resp) => {
-        req.session.is_user = true;
         let userExist = await usersModel.find({email: resp.user.email});
         if(userExist.length == 0) {
           await (usersModel({email: resp.user.email, isGoogle: true})).save();

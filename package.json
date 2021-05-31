@@ -2,7 +2,7 @@
   "name": "e-rent",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.j",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon app.js",
