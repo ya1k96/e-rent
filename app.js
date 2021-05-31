@@ -8,15 +8,16 @@ var firebase = require('firebase');
 // const session = require('express-session'); 
 // const MongoStore = require('connect-mongo');
 var firebaseConfig = {
-    apiKey: "AIzaSyDyjuCMt0nGfwZkBZXTNutSvkZyS6tvpFw",
-    authDomain: "e-rent-16ae4.firebaseapp.com",
-    databaseURL: "https://e-rent-16ae4.firebaseio.com",
-    projectId: "e-rent-16ae4",
-    storageBucket: "e-rent-16ae4.appspot.com",
-    messagingSenderId: "852609468771",
-    appId: "1:852609468771:web:651bc3cedfe83c876beb56",
-    measurementId: "G-MEASUREMENT_ID",
+  apiKey: process.env.apiKeyFire,
+    authDomain: process.env.authDomain,
+    databaseURL: process.env.databaseURLFire,
+    projectId: process.env.projectId,
+    storageBucket: process.env.storageBucket,
+    messagingSenderId: process.env.messagingSenderId,
+    appId: process.env.appId,
+    measurementId: process.env.measurementId,
   };
+
 const contractModel = require('./models/contract');
 
 const dbUser = process.env.DBUSER;
