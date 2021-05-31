@@ -267,3 +267,24 @@ a:hover, a:focus {
         width: 30%;
     }
 }
+
+.login-box {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-control:focus {
+    border-color: #6bbefd !important;
+}
+.form-control {
+    border-radius: 26px;
+}
+
+.ui-slider-range {
+    background-color: #6bbefd !important;
+}
+.ui-slider-handle {
+    background-color: #6bbefc !important;
+}

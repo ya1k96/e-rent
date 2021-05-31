@@ -5,12 +5,10 @@ const getPDF = require('../functions/invoice');
 const moment = require('moment');
 const path = require('path');
 const fs = require('fs');
-const invoice = require("../models/invoice");
-const QRCode = require('qrcode');
 moment.locale('es');
 
 require('dotenv').config();
-module.exports = (app) => {
+module.exports = (app, firebase) => {
     mercadopago.configurations.setAccessToken(process.env.ACCESS_TOKEN); 
     
     app.post("/payments/create_preference", (req, res) => {

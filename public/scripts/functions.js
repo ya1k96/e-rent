@@ -7,12 +7,29 @@ function addContract(e) {
     $.post("/inquilinos/add?" + forma, function( data ) {
         console.log(data);
         if(data.ok) {
-            window.location.href = '?status=success';
+            window.location.href = '?status=susccess';
         } else {
             window.location.href = '?status=danger';        
         }
     });
 };
+
+function sendLogin(email, password, cb) {
+    let data = {email, password};
+    fetch("login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    })
+    .then(function(response) {
+        return response.json();
+    })  
+    .then(function(response) {
+        cb(response)
+    })  
+}
 
 /**
  * @param {number} quantity Cantidad de productos
@@ -57,5 +74,30 @@ function createPreference() {
      document.querySelector("#button-checkout").appendChild(script);
  }
 
+ const sendToServer = async subData => {
+    console.log('saving to server...');
+    await fetch("/subscribe", {
+        method: "POST",
+        headers: {
+            'content-type': 'application/json'
+        },
+        body: JSON.stringify({ sub: subData })
+    });
+  }
+  const subscribe = async () => {
+    const serviceWorker = await navigator.serviceWorker.ready; // 1
+    const subscription = await serviceWorker.pushManager.getSubscription(); // 2
+
+    if (!subscription) {
+        console.log('subscribing....');
+        const push = await serviceWorker.pushManager.subscribe({ // 3
+            userVisibleOnly: true,
+            applicationServerKey: 'BLTrRpzJQuGKQCOx5PrbIn_dI9d8ZuzZ7iVPRQ0Wf7EJBm0Bt4-f08zrej7I8WBEevAQriPtUAKCW_AbEtQLhh0'
+        })
+        console.log('subscribed. ', push);
+
+        await sendToServer(push);
+    }
+  }
 
  

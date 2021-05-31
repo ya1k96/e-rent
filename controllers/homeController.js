@@ -4,13 +4,21 @@ const contractModel = require('../models/contract');
 const invoicePDF = require('../functions/invoice');
 const invoice = require('../models/invoice');
 
-module.exports = (app) => {
-    app.get('/', async (req, res) => {
+module.exports = (app, firebase) => {
+    let middleware = (req,res,next) => {
+      var user = firebase.auth().currentUser;
+      if(user) {
+          next();
+      } else {
+          return res.redirect('./login')
+      }
+    }
+    app.get('/', middleware, async (req, res) => {
       let day = (new Date()).getDate();
       let month = (new Date()).getMonth() + 1;
       let contracts = await contractModel.find({}).populate({
         path: 'invoices'       
-    })
+      })
 
     let renters = [];
     contracts.forEach((contract) => {
@@ -33,7 +41,7 @@ module.exports = (app) => {
       return res.render('home/index', {data});
     });
 
-    app.get('/inquilinos', async(req, res) => {
+    app.get('/inquilinos', middleware, async(req, res) => {
       let data = {};
       if(req.query.status) {
         data.status = {
@@ -47,7 +55,7 @@ module.exports = (app) => {
       return res.render('inquilinos/index', {data: data});
     });
 
-    app.post('/inquilinos/add', (req,res) => {
+    app.post('/inquilinos/add', middleware, (req,res) => {
       const body = req.query;
       let contract = {
         name: body.name,
@@ -78,20 +86,12 @@ module.exports = (app) => {
 
     });
 
-    // app.get('/invoice/:id', async (req, res) => {
-    //   const id = req.params.id;
+    app.get('/login', (req, res) => {
+      
+      return res.render('auth/login');
+    });
 
-    //   const invoice = invoiceModel.find();
-
-    //   const documentName = invoicePDF()
-
-    //   setTimeout(() => {
-    //     return res.sendFile(path.resolve(__dirname, './document.pdf'));
-    //   }, 1500);
-    
-    // });
-
-    app.get('/invoice/detail/:id', async (req, res) => {
+    app.get('/invoice/detail/:id', middleware, async (req, res) => {
       const id = req.params.id;
       const invoice = await invoiceModel.findById(id)
       .populate(['contract_id','payment']);
@@ -100,7 +100,7 @@ module.exports = (app) => {
       return res.render('facturas/detail', {invoice});
     });
 
-    app.get('/invoice', async (req, res) => {
+    app.get('/invoice', middleware, async (req, res) => {
       const invoices = await invoiceModel.find({})
       .populate('contract_id')
       .limit(3);

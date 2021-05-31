@@ -2,19 +2,23 @@ const mongoose = require('mongoose');
 let { Schema } = mongoose;
 
 const userSchema = new Schema({
-    nickname: {
-        type: String,
-        required: true,
-        unique: true
-    },    
+    role: {
+        type: Schema.Types.ObjectId,
+        ref: 'roles',
+        default: null
+    },
     email: {
         type: String,
         required: true,
         unique: true
+    },    
+    isGoogle: {
+        type: Boolean,
+        default: false
     },
-    password: {
-        type: String,
-        required: true
+    isFacebook: {
+        type: Boolean,
+        default: false
     }
     
 });
