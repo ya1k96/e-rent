@@ -11,7 +11,7 @@ const assets = [
   "./scripts/moment.js",
   "//cdn.jsdelivr.net/npm/sweetalert2@11",
   "./scripts/functions.js",
-  "/scripts/my-script.js"
+  "./scripts/my-script.js"
 ]
 
 self.addEventListener("install", installEvent => {
