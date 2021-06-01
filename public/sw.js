@@ -4,12 +4,14 @@ const assets = [
   "./css/flat-ui.css",
   "./css/my-css.css",
   "./css/jquery.dataTables.min.css",
-  "./scripts/jquery-3.3.1.min.js",
+  "https://code.jquery.com/jquery-3.6.0.min.js",
   "https://unpkg.com/popper.js@1.14.1/dist/umd/popper.min.js",
   "./scripts/flat-ui.js",
   "./scripts/jquery.dataTables.min.js",
   "./scripts/moment.js",
   "//cdn.jsdelivr.net/npm/sweetalert2@11",
+  "https://www.gstatic.com/firebasejs/8.5.0/firebase-app.js",
+  "https://www.gstatic.com/firebasejs/8.5.0/firebase-auth.js",
   "./scripts/functions.js",
   "./scripts/my-script.js"
 ]
