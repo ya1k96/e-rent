@@ -24,13 +24,28 @@ self.addEventListener("install", installEvent => {
   )
 })
 
-self.addEventListener("fetch", fetchEvent => {
-    fetchEvent.respondWith(
-      caches.match(fetchEvent.request).then(res => {
-        return res || fetch(fetchEvent.request)
-      })
-    )
-  })
+self.addEventListener('fetch', event => {
+  // Permite al navegador hacer este asunto por defecto
+  // para peticiones non-GET.
+  if (event.request.method != 'GET') return;
+
+  // Evita el valor predeterminado, y manejar solicitud nosostros mismos.
+  event.respondWith(async function() {
+    // Intenta obtener la respuesta de el cache.
+    const cache = await caches.open('dynamic-v1');
+    const cachedResponse = await cache.match(event.request);
+
+    if (cachedResponse) {
+      // Si encontramos una coincidencia en el cache, lo devuelve, pero también
+      // actualizar la entrada en el cache en segundo plano.
+      event.waitUntil(cache.add(event.request));
+      return cachedResponse;
+    }
+
+    // Si no encontramos una coincidencia en el cache, usa la red.
+    return fetch(event.request);
+  }());
+});
 
   self.addEventListener('push', function(e) {
     console.log(e);

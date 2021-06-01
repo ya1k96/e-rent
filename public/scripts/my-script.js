@@ -32,12 +32,12 @@ $(function() {
         .text("%" + slider3Options.values[1] * slider3ValueMultiplier);
     }
 
-  if ("serviceWorker" in navigator) {
-      window.addEventListener('load', async () => {
-      const sw = await navigator.serviceWorker.register('../sw.js'); // done
-      await subscribe(); // we are here!
-    })
-  }
+  // if ("serviceWorker" in navigator) {
+  //     window.addEventListener('load', async () => {
+  //     const sw = await navigator.serviceWorker.register('../sw.js'); // done
+  //     await subscribe(); // we are here!
+  //   })
+  // }
 
   if($("#btn-save")) {    
     $("#btn-save").on('click', addContract);
