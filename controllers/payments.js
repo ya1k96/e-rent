@@ -164,7 +164,7 @@ module.exports = (app) => {
                         destination: documentName,
                     }).then(async (resp) => {
                         //Eliminamos el archivo pdf temporal
-                        fs.unlinkSync(documentPath);
+                        // fs.unlinkSync(documentPath);
     
                         invoice.payment.doc_url = documentName;
                         await invoice.payment.save();
