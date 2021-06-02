@@ -11,7 +11,8 @@ module.exports = (app) => {
       if(user) {
           next();
       } else {
-          return res.redirect('./login')
+        let url = req.protocol +'://'+ req.get('host') +'/login';
+        return res.redirect(url);
       }
     }
     app.get('/', middleware, async (req, res) => {
