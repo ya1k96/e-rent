@@ -37,6 +37,7 @@ const firebase = require('../functions/firebase');
         let userExist = await usersModel.find({email: resp.user.email});
         if(userExist.length == 0) {
           await (usersModel({email: resp.user.email, isGoogle: true})).save();
+          return res.json({ok: true, msg:"usuario creado."})
         }
         if(userExist.length > 0 && !userExist.isGoogle) {
           return res.json({ok: false, msg: "Este correo se encuentra en uso"})
@@ -45,7 +46,6 @@ const firebase = require('../functions/firebase');
         }
 
       })
-
     })
     app.post('/signIn', async (req, res) => {
         const email = req.body.email;

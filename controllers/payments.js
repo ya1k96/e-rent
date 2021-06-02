@@ -3,9 +3,7 @@ const invoiceModel = require('../models/invoice');
 const paymentsModel = require('../models/payment');
 const getPDF = require('../functions/invoice');
 const moment = require('moment');
-const firebase = require('../functions/firebase');
 const path = require('path');
-const fs = require('fs');
 moment.locale('es');
 
 require('dotenv').config();
@@ -152,11 +150,6 @@ module.exports = (app) => {
             getPDF(paymentDetail, documentPath);
             
         }
-        
-        
-        setTimeout(async () => {
-            await fs.unlinkSync(documentPath);
-        }, 2000);
 
         setTimeout(() => {
             return res.sendFile(path.resolve(__dirname, documentPath));
