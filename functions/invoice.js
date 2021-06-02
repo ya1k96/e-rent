@@ -1,18 +1,22 @@
 const fs = require("fs");
-const path = require('path');
 const PDFDocument = require("pdfkit");
-const uuid = require('uuid');
 
 let invoice = (invoice, path) => {
-  let doc = new PDFDocument({ size: "A4", margin: 40 });
+  return new Promise((resolve) => {
+    let doc = new PDFDocument({ size: "A4", margin: 40 });
+  
+    header(doc, invoice);
+    customerInformation(doc, invoice);
+    invoiceTable(doc, invoice);
+    footer(doc, invoice);
+  
+    doc.end();
+    doc.pipe(fs.createWriteStream(path))
+    doc.on('end', function() {
+      resolve();
+    })
 
-  header(doc, invoice);
-  customerInformation(doc, invoice);
-  invoiceTable(doc, invoice);
-  footer(doc, invoice);
-
-  doc.end();
-  doc.pipe(fs.createWriteStream(path));
+  })
 }
 
 let header = (doc, invoice) => {

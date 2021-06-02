@@ -3,7 +3,7 @@ const paymentsModel = require('../models/payment');
 const contractModel = require('../models/contract');
 const invoicePDF = require('../functions/invoice');
 const invoice = require('../models/invoice');
-const firebase = require('../functions/firebase');
+const {firebase} = require('../functions/firebase');
 
 module.exports = (app) => {
     let middleware = (req,res,next) => {
@@ -97,7 +97,6 @@ module.exports = (app) => {
       const invoice = await invoiceModel.findById(id)
       .populate(['contract_id','payment']);
       
-      console.log(invoice)
       return res.render('facturas/detail', {invoice});
     });
 

@@ -1,5 +1,5 @@
 const usersModel = require('../models/user');
-const firebase = require('../functions/firebase');
+const {firebase} = require('../functions/firebase');
 
   module.exports = (app) => {
     firebase.auth().onAuthStateChanged((user) => {

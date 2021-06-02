@@ -2,8 +2,10 @@ const mercadopago = require("mercadopago");
 const invoiceModel = require('../models/invoice');
 const paymentsModel = require('../models/payment');
 const getPDF = require('../functions/invoice');
+const storage = require('../functions/storage');
 const moment = require('moment');
 const path = require('path');
+const fs = require('fs');
 moment.locale('es');
 
 require('dotenv').config();
@@ -103,64 +105,82 @@ module.exports = (app) => {
         if(!invoice || !invoice.payment || invoice.payment._id != id_payment) {
             return res.render('recibos/404');
         }
+        
+        personInfo = {
+            name: invoice.contract_id.name+' '+invoice.contract_id.surname,
+            address: "Dr. Valenzuela",
+            postal_code: 3412,
+            country: "Argentina",
+            state: "Corrientes",
+            city: "San Cosme"
+        };
 
-        if(!invoice.payment.doc_url) {
-            personInfo = {
-                name: invoice.contract_id.name+' '+invoice.contract_id.surname,
-                address: "Dr. Valenzuela",
-                postal_code: 3412,
-                country: "Argentina",
-                state: "Corrientes",
-                city: "San Cosme"
-            };
+        const billingDate = moment(invoice.payment.createdAt).format('L');
+        let documentName = `${id_payment}${personInfo.name}.pdf`;
+        let pathDocuments = path.resolve(__dirname, `../public/documents`);
+        documentPath = `${pathDocuments}/${documentName}`;
 
-            let documentName = `${id_payment}-${personInfo.name}.pdf`;
-            let pathDocuments = path.resolve(__dirname, `../public/documents`);
-            documentPath = path.resolve(__dirname, `${pathDocuments}/${documentName}`);
-            // let qrPath = `${pathDocuments}/${id_payment}QR.png`;
-            //Temporalmente sin uso
-            // QRCode.toFile(qrPath, `${req.protocol}://${req.get('host')}/invoice/detail/${id_payment}`, function (err) {
-            //     if (err) throw err
-            //     console.log('done')
-            //   });
+        let bucket = await storage();
+        if(invoice.payment.doc_url) {
+            let doc = bucket.file(documentName);
 
-            const billingDate = moment(invoice.payment.createdAt).format('L');
-            const paymentDetail = {
-                personInfo,
-                items: [{
-                    description: "Mes correspondiente a " + moment(invoice.createdAt).format("MMMM"),
-                    price: invoice.payment.total
-                }],
-                total: invoice.payment.total + ((invoice.payment.interest/100) * invoice.payment.total),
-                order_number: id_payment,
-                header:{
-                    company_name: "",
-                    company_logo: '',
-                    company_address: "Documento no valido como factura"
-                },
-                footer:{
-                  text: "data in rest"
-                },
-                currency_symbol:"ARS", 
-                date: {
-                  billingDate
-                }
-              };        
+            const dateExp = new Date(); 
+            dateExp.setHours(dateExp.getHours() + 1);
 
-            getPDF(paymentDetail, documentPath);
-            
+            const result = await doc.getSignedUrl({ action: "read" , expires : dateExp});
+            if(result.length == 0) {
+                return res.render('recibos/404');
+            }
+
+            return res.redirect(result[0]);
         }
 
-        setTimeout(() => {
-            return res.sendFile(path.resolve(__dirname, documentPath));
-        }, 1500);
-        
-      });
+        const paymentDetail = {
+            personInfo,
+            items: [{
+                description: "Mes correspondiente a " + moment(invoice.createdAt).format("MMMM"),
+                price: invoice.payment.total
+            }],
+            total: invoice.payment.total + ((invoice.payment.interest/100) * invoice.payment.total),
+            order_number: id_payment,
+            header:{
+                company_name: "",
+                company_logo: '',
+                company_address: "Documento no valido como factura"
+            },
+            footer:{
+                text: "data in rest"
+            },
+            currency_symbol:"ARS", 
+            date: {
+                billingDate
+            }
+        };    
+                    
+        getPDF(paymentDetail, documentPath)
+        .then((resp) => {
+            if(fs.existsSync(documentPath)) {
+                bucket.upload(documentPath, {
+                    destination: documentName,
+                }).then(async (resp) => {
+                    //Eliminamos el archivo pdf temporal
+                    fs.unlinkSync(documentPath);
 
-    //   app.get('/host', (req,res) => {
-    //       return res.json({
-    //           host: req.get('host')
-    //       })
-    //   })
+                    invoice.payment.doc_url = documentName;
+                    await invoice.payment.save();
+                    
+                    let doc = bucket.file(documentName);
+
+                    const dateExp = new Date(); 
+                    dateExp.setHours(dateExp.getHours() + 1);
+
+                    const result = await doc.getSignedUrl({ action: "read" , expires : dateExp});
+                    return res.redirect(result[0]);
+                });
+            } else {
+                return res.render('recibos/404');
+            }                
+        });
+    });        
 
 }
