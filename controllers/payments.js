@@ -161,27 +161,27 @@ module.exports = (app) => {
         .then((resp) => {
                 setTimeout(function(){
 
-                    if(fs.existsSync(documentPath)) {
-                        bucket.upload(documentPath, {
-                            destination: documentName,
-                        }).then(async (resp) => {
-                            //Eliminamos el archivo pdf temporal
-                            fs.unlinkSync(documentPath);
-        
-                            invoice.payment.doc_url = documentName;
-                            await invoice.payment.save();
-                            
-                            let doc = bucket.file(documentName);
-        
-                            const dateExp = new Date(); 
-                            dateExp.setHours(dateExp.getHours() + 1);
-        
-                            const result = await doc.getSignedUrl({ action: "read" , expires : dateExp});
-                            return res.redirect(result[0]);
-                        });
-                    } else {
-                        return res.render('recibos/404');
-                    }
+                    bucket.upload(documentPath, {
+                        destination: documentName,
+                    }).then(async (resp) => {
+                        //Eliminamos el archivo pdf temporal
+                        fs.unlinkSync(documentPath);
+    
+                        invoice.payment.doc_url = documentName;
+                        await invoice.payment.save();
+                        
+                        let doc = bucket.file(documentName);
+    
+                        const dateExp = new Date(); 
+                        dateExp.setHours(dateExp.getHours() + 1);
+    
+                        const result = await doc.getSignedUrl({ action: "read" , expires : dateExp});
+                        return res.redirect(result[0]);
+                    });
+                    // if(fs.existsSync(documentPath)) {
+                    // } else {
+                    //     return res.render('recibos/404');
+                    // }
                 }, 2000);            
 
             });
