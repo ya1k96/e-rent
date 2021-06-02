@@ -1,6 +1,7 @@
 const usersModel = require('../models/user');
+const firebase = require('../functions/firebase');
 
-  module.exports = (app, firebase) => {
+  module.exports = (app) => {
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
           var uid = user.uid;

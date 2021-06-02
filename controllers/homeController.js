@@ -3,8 +3,9 @@ const paymentsModel = require('../models/payment');
 const contractModel = require('../models/contract');
 const invoicePDF = require('../functions/invoice');
 const invoice = require('../models/invoice');
+const firebase = require('../functions/firebase');
 
-module.exports = (app, firebase) => {
+module.exports = (app) => {
     let middleware = (req,res,next) => {
       var user = firebase.auth().currentUser;
       if(user) {

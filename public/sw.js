@@ -10,8 +10,6 @@ const assets = [
   "./scripts/jquery.dataTables.min.js",
   "./scripts/moment.js",
   "./scripts/sweetalert2.js",
-  "./scripts/firebase-app.js",
-  "./scripts/firebase-auth.js",
   "./scripts/functions.js",
   "./scripts/my-script.js"
 ]

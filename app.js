@@ -1,22 +1,9 @@
 const express = require('express');
 const app = new express();
 const mongoose= require('mongoose');
-require('dotenv').config();
 const webpush = require('web-push');
 const Agenda = require('agenda');
-var firebase = require('firebase');
-// const session = require('express-session'); 
-// const MongoStore = require('connect-mongo');
-var firebaseConfig = {
-  apiKey: process.env.apiKeyFire,
-    authDomain: process.env.authDomain,
-    databaseURL: process.env.databaseURLFire,
-    projectId: process.env.projectId,
-    storageBucket: process.env.storageBucket,
-    messagingSenderId: process.env.messagingSenderId,
-    appId: process.env.appId,
-    measurementId: process.env.measurementId,
-  };
+require('dotenv').config();
 
 const contractModel = require('./models/contract');
 
@@ -80,15 +67,7 @@ db.on("error", function(er){
     console.log("No se pudo conectar a la base de datos")
     console.log(er);   
 })
-/*
-Temporalmente sin uso
-*/
-// app.use(session({ 
-//     secret: process.env.SESSION_SECRET || 'some-secret', 
-//     resave: false, // investigar mas -> https://www.npmjs.com/package/express-session 
-//     saveUninitialized: false, 
-//     store: MongoStore.create({ mongoUrl: mongoConnectionString})
-// }));
+
 app.use((req, res, next) => {
 	res.header('Access-Control-Allow-Origin', '*');
 	res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
@@ -119,7 +98,6 @@ app.get('/send', (req,res) => {
     return res.json({ok: true})
 })
   
-firebase.initializeApp(firebaseConfig);
 const userController = require('./controllers/userController');
 const homeController = require('./controllers/homeController');
 const paymentsController = require('./controllers/payments');
@@ -130,9 +108,9 @@ app.use(express.static('./views'));
 app.set('view engine', 'ejs');
 
 //Rutas
-userController(app, firebase);
-homeController(app, firebase);
-paymentsController(app, firebase);
+userController(app);
+homeController(app);
+paymentsController(app);
 
 app.listen((process.env.PORT||3000),() => {
 

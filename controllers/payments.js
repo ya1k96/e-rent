@@ -3,12 +3,13 @@ const invoiceModel = require('../models/invoice');
 const paymentsModel = require('../models/payment');
 const getPDF = require('../functions/invoice');
 const moment = require('moment');
+const firebase = require('../functions/firebase');
 const path = require('path');
 const fs = require('fs');
 moment.locale('es');
 
 require('dotenv').config();
-module.exports = (app, firebase) => {
+module.exports = (app) => {
     mercadopago.configurations.setAccessToken(process.env.ACCESS_TOKEN); 
     
     app.post("/payments/create_preference", (req, res) => {
