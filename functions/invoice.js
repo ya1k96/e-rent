@@ -12,7 +12,7 @@ let invoice = (invoice, path) => {
   
     doc.end();
     doc.on('end', function() {
-      doc.pipe(fs.createWriteStream(path))
+      this.pipe(fs.createWriteStream(path))
       resolve();
     })
 
