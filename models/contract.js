@@ -22,7 +22,12 @@ const contractSchema = new Schema({
         require: true
     },
     price: {
-        type: Number
+        type: Number,
+        required: true
+    },
+    actual_price: {
+        type: Number,
+        required: true        
     },
     pay_day: {
         type: Number,
@@ -34,6 +39,10 @@ const contractSchema = new Schema({
     },
     increment_porc: {
         type: Number,
+        required: true
+    },
+    next_inc: {
+        type: Date,
         required: true
     },
     invoices: [
