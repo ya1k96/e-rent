@@ -20,7 +20,7 @@
                 <div class="col-md-6 col-12 pl-4">
                     <h6 class="font-weight-bold">Mes de
                         <span id="invoice-month">
-                            <%= invoice.createdAt %>
+                            <%= invoice.period %>
                         </span>
                     </h6>
                     <p class="text-invoice-detail">
@@ -72,20 +72,20 @@
     </div>
 <%- include('../partials/footer'); -%>
 <script>
-    $(function() {
-        moment.locale('es');
+    (function() {
         let invoiceMonth = $("#invoice-month");
         let dateField = $("#date-field");
         let expirationField = $("#expiration");
-        
+        let date = new Date();
+        date.setMonth(parseInt(invoiceMonth.html()) - 1);
         let momentDate = moment(dateField.html()).format("ll");
-        let momentMonth = moment(invoiceMonth.html()).format("MMMM");
+        let momentMonth = moment(date).format("MMMM");
         let momentexpiration = moment(expirationField.html()).fromNow();
         console.log(momentMonth)
         dateField.html(momentDate);
         invoiceMonth.html(momentMonth);
         expirationField.html(momentexpiration);        
-    })
+    })()
 
     function newPayment() {
         let idInvoice = $("#id-invoice").val();

@@ -14,14 +14,16 @@
         </div>
     <% } %>
 
-        <div class="row-s midd-content mt-3">       
+        <div class="row-s midd-content mt-3 mb-2">       
             <% if(data.inquilinos.length > 0) {%>
                 <% for (var i=0; i < data.inquilinos.length; i++) {%>
-                    <div class="card m-2 p-2 column margin-10">
-                        <img src="../icons/neutral-user.png" alt="">
-                        <p class="text-center icon-txt"><%= data.inquilinos[i].name + ' ' + data.inquilinos[i].surname %></p>
-                    
-                    </div>            
+                    <a href="./detail/<%= data.inquilinos[i]._id %>">
+                        <div class="card m-2 p-2 column margin-10">
+                            <img src="../icons/neutral-user.png" alt="">
+                            <p class="text-center icon-txt"><%= data.inquilinos[i].name + ' ' + data.inquilinos[i].surname %></p>
+                                
+                        </div>            
+                    </a>
                 <% } %>
             <% } else { %>
             <% } %>

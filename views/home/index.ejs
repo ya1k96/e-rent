@@ -35,17 +35,17 @@
                     <% for(var i = 0; i < data.renters.length; i++) {%>
                         <% if(data.renters[i].invoices.length > 0) { %>
                             <% for(var j = 0; j < data.renters[i].invoices.length; j++) {%>
-                                <div class="row center">
-                                    <img class="rounded-circle avatar-img col-2"  src="../icons/neutral-user.png" alt="">
-                                    <p class="col-3 txt-form">
-                                        <%= data.renters[i].name %> <br>
-                                        <span class="total">$ <%= data.renters[i].invoices[j].total %></span>
-                                    </p>                
-                                    <span class="col-3 txt-form pb-3 text-center"> <%= data.renters[i].pay_day + '/' + data.month %> </span>
-                                    <div class="col-2 mb-4">
-                                        <button class="btn btn-outline-info"> <a href="/invoice/detail/<%= data.renters[i].invoices[j]._id %>">ver</a></button>
-                                    </div>
-                                </div>                                
+                                <a href="/invoice/detail/<%= data.renters[i].invoices[j]._id %>">
+                                    <div class="row center">
+                                        <img class="rounded-circle avatar-img col-2"  src="../icons/neutral-user.png" alt="">
+                                        <p class="col-3 txt-form">
+                                            <%= data.renters[i].name %> <br>
+                                            <span class="total">$ <%= data.renters[i].invoices[j].total %></span>
+                                        </p>                
+                                        <span class="col-3 txt-form pb-3 text-center"> <%= data.renters[i].pay_day + '/' + data.month %> </span>                                   
+                                    
+                                    </div>                                
+                                </a>
                                 
                             <% }%>
                         <% }%>

@@ -1,59 +1,87 @@
 <%- include('../partials/head'); -%>
-<%- include('../partials/navbar'); -%>
-<div class="row-s center midd-content m-0">               
-    <h4>Facturas generadas</h4>
-</div>
+<style>
+    .row.center {
+        justify-content: space-around;
+    }
+    .pendiente {
+        color:rgb(223, 63, 4);
+    }
+    .pagado {
+        color: green;
+        padding-right: 1rem;
+    }
+    #proximos-vencimientos {
+        overflow-x: hidden;
+        padding: 2px;
+        max-height: 20rem;
+    }
 
-<div class="row-s midd-content m-4">       
-    <div class="card p-1">
-        <% if(invoices.length > 0) {%>
-            <table class="table vencimientos table-sm font-s-90">
-                <thead class="thead-light">
-                    <th>Nombre</th>
-                    <th>Monto</th>
-                    <th>Mes</th>
-                    <th>Pagado</th>
-                </thead>
-                <tbody>
-                    <% for (var i=0; i < invoices.length; i++) { %>
-                        <tr>
-                            <td>
-                                <%= invoices[i].contract_id.name %> <br>
-                                <%= invoices[i].contract_id.surname %> 
-                            </td>
-                            <td>
-                                $ <%= invoices[i].total %>
-                            </td>
-                            <td>
+</style>
+<%- include('../partials/navbar'); -%>
+<h5 class="text-center">Facturas</h5>
+<div class="row midd-content p-3" style="margin-top: 3rem;">   
+    <div class="card mx-2 col-md-5 col-12" id="proximos-vencimientos">
+        <input id="total-invoices" type="hidden" value="<%= invoices.length %>">
+        <% for(var i = 0; i < invoices.length; i++) {%>
+            <a href="/invoice/detail/<%= invoices[i]._id %>">
+                <div class="row center">                        
+                        <img src="/icons/invoice.svg" alt="" style="height: 11%; width: 11%;">  
+                        <p><%= invoices[i].contract_id.name %> <br>
+                            <span><%= invoices[i].contract_id.surname %></span>
+                        </p>
+                        <span>
+                            <span id="invoice-month-<%= i %>">
                                 <%= invoices[i].month %>
-                            </td>
-                            <td>
-                                <% if(invoices[i].payed) { %>
-                                    <span class="badge badge-pill badge-success">Si</span>
-                                <% } %>                                                            
-                            </td>
-                        </tr>                    
-    
-                <% } %>
-                </tbody>
-            </table>
-    
-        <% } else { %>
-    
-        <% } %>
-    </div>     
+                            </span>
+                            <br>
+                            <% if(invoices[i].payed) { %>
+                                <p class="subtitle pagado">Pagado</span></p>
+                                <!-- <span class="fui-check pagado"> -->
+                            <% } else { %>
+                                <p class="subtitle pendiente">Pendiente</p>
+                            <% } %>
+                                
+                        </span>                                          
+                        
+                </div>
+            </a>
+                
+                    
+            
+            <% if(i < (invoices.length - 1) ) { %>
+                <hr>
+            <% }%>
+        <% }%>
+
+    </div>    
+
+    <div class="card mx-2 col-md-2 col-12">
+        <p>Filtrar</p>
+        <select class="custom-select">
+            <option selected>Año</option>
+            <option value="1">One</option>
+            <option value="2">Two</option>
+            <option value="3">Three</option>
+        </select>
+    </div>
                 
 </div>
 
 <%- include('../partials/footer'); -%>
 <script>
-     $(document).ready( function () {
-         
-        $('.table').DataTable({
-            responsive: true,
-            language: {
-                url: './css/vendor/datatables-es-ar.json' //Ubicacion del archivo con el json del idioma.
-            }
-        });
-    } );
-</script>            
+    (function(){
+        let len = $("#total-invoices").val();
+        let date = new Date();
+
+        for(let i = 0; i<len; i++) {
+            let invoiceMonth = $("#invoice-month-" + i);
+            date.setMonth(parseInt(invoiceMonth.html()) - 1);
+
+            let momentMonth = moment(date).format("MMMM");
+            invoiceMonth.html("Mes de " + momentMonth)
+            .css('font-weight', 'bold')
+            .css('text-transform', 'capitalize');
+        }
+
+    })()
+</script>           

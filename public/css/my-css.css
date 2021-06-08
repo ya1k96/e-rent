@@ -120,7 +120,7 @@ p {
 }
 
 .margin-10 {
-    width: 10rem; height: 11rem;
+    width: 10rem; height: auto;
 }
 
 .width-10 {
@@ -146,20 +146,23 @@ p {
     color: white;
 } */
 
-@media (min-width: 620px) {
-    .margin-10 {
-        height: 12rem;
-    }
+a :hover {
+    background-color: #b7defc;
 }
 
 a {
     color: #34495e;
 }
-
+hr {
+    margin: 8px;
+}
 a:hover, a:focus {
     color: white;
 }
-
+.subtitle {
+    font-size: 75%;
+    color: rgb(102, 102, 102);
+}
 .txt-form {
     font-size: 80%;
 }
