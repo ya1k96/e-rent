@@ -2,7 +2,7 @@ const mercadopago = require("mercadopago");
 const invoiceModel = require('../models/invoice');
 const paymentsModel = require('../models/payment');
 const getPDF = require('../functions/invoice');
-const storage = require('../functions/storage');
+const {getBucket} = require('../functions/storage');
 const moment = require('moment');
 const path = require('path');
 const fs = require('fs');
@@ -124,7 +124,7 @@ module.exports = (app) => {
             fs.mkdirSync(pathDocuments);
         }
 
-        let bucket = await storage();
+        let bucket = await getBucket();
         if(invoice.payment.doc_url) {
             let doc = bucket.file(documentName);
 

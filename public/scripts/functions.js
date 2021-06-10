@@ -30,6 +30,22 @@ function sendLogin(email, password, cb) {
         cb(response)
     })  
 }
+function sendRegister(email, password, userId, cb) {
+    let data = {email, password, userId};
+    fetch("register", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    })
+    .then(function(response) {
+        return response.json();
+    })  
+    .then(function(response) {
+        cb(response)
+    })  
+}
 
 /**
  * @param {number} quantity Cantidad de productos

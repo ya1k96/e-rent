@@ -11,9 +11,6 @@ const contractSchema = new Schema({
         type: String,
         required: true
     },
-    email: {
-        type: String
-    },
     begin: {
         type: Date,
         require: true
@@ -40,6 +37,10 @@ const contractSchema = new Schema({
     },
     next_inc: {
         type: Date
+    },
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: 'users'
     },
     invoices: [
         {

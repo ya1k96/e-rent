@@ -2,13 +2,17 @@
 <div class="login-box">
     <img src="../images/icons/eRent144x144.png">
     <p clasS="text-muted">e-Rent</p>
-    <h5 class="text-muted">Ingresar</h5>
+    <h5 class="text-muted">Ingresar</h5>   
+        <div id="notif"></div>
         <div class="col-md-4 col-sm-8">
-            <input type="text" class="form-control" placeholder="Usuario" id="username">
-    
+            <input type="text" class="form-control" placeholder="Email" id="email">
+            <div id="emailFeedback" class="invalid-feedback">
+            </div>
         </div>
         <div class="col-md-4 col-sm-8 pt-2">
             <input type="text" class="form-control" placeholder="Contraseña" id="password">
+            <div id="passwordFeedback" class="invalid-feedback">
+            </div>
         </div>
 
         <div class="row pt-4">
@@ -16,90 +20,67 @@
             
             <button class="ml-2 btn btn-outline-info btn-lg">
                 <a href="./register">
-                    Registrarse
+                    Registrate
                 </a>
             </button>
         </div>
         <br>
-        <p class="text-muted" style="font-size: .9rem;">ingresar con</p>
-        <button class="btn btn-outline-info p-1" style="width: 10rem;" onclick="loginWithGoogle()"><svg width="40" height="40"><g id="Google-Button" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="40" height="40" rx="2" style="fill: rgb(255, 255, 255);"></rect><g id="logo_googleg_48dp" transform="translate(10.5, 10.5) scale(1.1)"><path d="M17.64,9.20454545 C17.64,8.56636364 17.5827273,7.95272727  17.4763636,7.36363636 L9,7.36363636 L9,10.845 L13.8436364,10.845 C13.635,11.97 13.0009091,12.9231818 12.0477273,13.5613636 L12.0477273,15.8195455 L14.9563636,15.8195455 C16.6581818,14.2527273 17.64,11.9454545 17.64,9.20454545 L17.64,9.20454545 Z" id="Shape" fill="#4285F4"></path><path d="M9,18 C11.43,18 13.4672727,17.1940909 14.9563636,15.8195455 L12.0477273,13.5613636 C11.2418182,14.1013636 10.2109091,14.4204545 9,14.4204545 C6.65590909,14.4204545 4.67181818,12.8372727  3.96409091,10.71 L0.957272727,10.71 L0.957272727,13.0418182  C2.43818182,15.9831818 5.48181818,18 9,18 L9,18 Z" id="Shape" fill="#34A853"></path><path d="M3.96409091,10.71 C3.78409091,10.17 3.68181818,9.59318182 3.68181818,9  C3.68181818,8.40681818 3.78409091,7.83 3.96409091,7.29 L3.96409091,4.95818182  L0.957272727,4.95818182 C0.347727273,6.17318182 0,7.54772727 0,9 C0,10.4522727  0.347727273,11.8268182 0.957272727,13.0418182 L3.96409091,10.71 L3.96409091,10.71 Z" id="Shape" fill="#FBBC05"></path><path d="M9,3.57954545 C10.3213636,3.57954545 11.5077273,4.03363636 12.4404545,4.92545455  L15.0218182,2.34409091 C13.4631818,0.891818182 11.4259091,0 9,0 C5.48181818,0  2.43818182,2.01681818 0.957272727,4.95818182 L3.96409091,7.29 C4.67181818,5.16272727  6.65590909,3.57954545 9,3.57954545 L9,3.57954545 Z" id="Shape" fill="#EA4335"></path><path d="M0,0 L18,0 L18,18 L0,18 L0,0 Z" id="Shape"></path></g></g></svg></button>
+        
 </div>
 <%- include('../partials/footer'); -%>
-<script src="https://www.gstatic.com/firebasejs/8.5.0/firebase-auth.js"></script>
+
+
 <script>
-    $(function() {
-        var firebaseConfig = {
-            apiKey: "AIzaSyDyjuCMt0nGfwZkBZXTNutSvkZyS6tvpFw",
-            authDomain: "e-rent-16ae4.firebaseapp.com",
-            databaseURL: "https://e-rent-16ae4.firebaseio.com",
-            projectId: "e-rent-16ae4",
-            storageBucket: "e-rent-16ae4.appspot.com",
-            messagingSenderId: "852609468771",
-            appId: "1:852609468771:web:651bc3cedfe83c876beb56"
-        };
-        firebase.initializeApp(firebaseConfig);
-    })
+    (function(){
+        $("input.form-control").on('click', function(elem){
+            $(`#${elem.target.id}`).removeClass('is-invalid');
+        })
+    })()
+     function login() {
+        $("#loader").fadeIn();
+        let email = $("#email");
+        let password = $("#password");
 
-    function loginWithGoogle() {
-        var provider = new firebase.auth.GoogleAuthProvider();
-        firebase.auth()
-        .signInWithPopup(provider)
-        .then((result) => {
-            /** @type {firebase.auth.OAuthCredential} */
-            var credential = result.credential.idToken;
-            let token_id = credential;
-            fetch("googleLogin", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({token_id}),
-            })
-            .then(function(response) {
-                return response.json();
-            })  
-            .then(function(response) {
-                if(response.ok) {
-                    Swal.fire('Error',response.msg, 'warning');
-                } else {
-                    window.location.href = './';
-                }
-            })              
-        }).catch((error) => {
-            // Handle Errors here.
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            // The email of the user's account used.
-            var email = error.email;
-            // The firebase.auth.AuthCredential type that was used.
-            var credential = error.credential;
-            // ...
-        });
-    }
-
-    function login() {
-        let username = $("#username").val();
-        let password = $("#password").val();
-
-        if(username.length == 0) {
-            Swal.fire('Completa los campos', `Escribe tu email`, 'warning')
-        }
-        if(password.length == 0) {
-            Swal.fire('Completa los campos', `Escribe tu contraseña`, 'warning')           
-        }
-
-        sendLogin(username, password, function(data) {
-            console.log(data)
+        sendLogin(email.val(), password.val(), function(data) {
             if(data.ok) {
                 window.location.href = './';
             } else {
-                let message = (data.error.code == 'auth/too-many-requests') ? 
-                "Has hecho muchos intentos. Intenta nuevamente mas tarde o pide recuperar tu cuenta." : "Email o contraseña incorrectos. Comprueba tus datos.";
+                $("#loader").fadeOut(); 
+                if(data.code == 4) {
+                    let el = `<div class="alert alert-info alert-dismissible fade show" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                        <p class="text-center text-muted" style="font-size: 1rem;">
+                            <span class="fui-alert-circle"></span>
+                            Confirma tu correo para poder continuar<strong></strong> 
+                        </p>
+                        
+                    </div>`;
+                    $("#notif").append(el);
+                }
+                if(data.code == 0) {
+                    let el = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                        <p class="text-center text-muted" style="font-size: 1rem;">
+                            <span class="fui-alert-circle"></span>
+                            ${data.msg}<strong></strong> 
+                        </p>
+                        
+                    </div>`;
+                    $("#notif").append(el);
+                }
 
-                Swal.fire('Error', message, 'warning')           
-
+                if(data.errors.length > 0) {
+                    data.errors.forEach(value => {
+                        $(`#${value.param}`).addClass('is-invalid');
+                        $(`#${value.param}Feedback`).html(value.msg);
+                    });
+                }  
+                       
             }
         });
     }
-
 </script>

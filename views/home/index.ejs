@@ -37,7 +37,7 @@
                             <% for(var j = 0; j < data.renters[i].invoices.length; j++) {%>
                                 <a href="/invoice/detail/<%= data.renters[i].invoices[j]._id %>">
                                     <div class="row center">
-                                        <img class="rounded-circle avatar-img col-2"  src="../icons/neutral-user.png" alt="">
+                                        <img class="rounded-circle avatar-img col-2"  src="../icons/invoice.svg" alt="">
                                         <p class="col-3 txt-form">
                                             <%= data.renters[i].name %> <br>
                                             <span class="total">$ <%= data.renters[i].invoices[j].total %></span>

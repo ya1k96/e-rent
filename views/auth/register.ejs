@@ -1,0 +1,78 @@
+<%- include('../partials/head'); -%>
+<div class="login-box">
+    <img src="../images/icons/eRent144x144.png">
+    <p clasS="text-muted">e-Rent</p>
+    <h5 class="text-muted">Registrate</h5>
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <p class="text-muted text-center" style="font-size: 1rem;">
+            <span class="fui-question-circle"></span>
+            Para registrarte debes contar con tu <strong>Nro de usuario.</strong> <br> Buscalo en tu recibo
+        </p>
+      </div>
+        <div class="col-md-4 col-sm-8 pt-2">
+            <input type="text" class="form-control" placeholder="Correo" id="email">
+            <div id="emailFeedback" class="invalid-feedback">
+              </div>
+    
+        </div>
+        <div class="col-md-4 col-sm-8 pt-2">
+            <input type="text" class="form-control" placeholder="Nro de usuario" id="userId">
+            <div id="userIdFeedback" class="invalid-feedback">
+              </div>
+    
+        </div>
+        <div class="col-md-4 col-sm-8 pt-2">
+            <input type="text" class="form-control" placeholder="Contraseña" id="password">
+            <div id="passwordFeedback" class="invalid-feedback">
+              </div>
+        </div>
+
+        <div class="row pt-4">
+            <button class="btn btn-info btn-lg" onclick="register()">Registrate</button>
+            
+            <button class="ml-2 btn btn-outline-info btn-lg">
+                <a href="./login">
+                    Ingresar
+                </a>
+            </button>
+        </div>
+        <br>
+        
+</div>
+<%- include('../partials/footer'); -%>
+<script>
+    (function(){
+        $("input.form-control").on('click', function(elem){
+            $(`#${elem.target.id}`).removeClass('is-invalid');
+        })
+    })()
+     function register() {
+        let email = $("#email");
+        let password = $("#password");
+        let userId = $("#userId");
+
+        sendRegister(email.val(), password.val(), userId.val(), function(data) {
+            if(data.ok) {
+                email.val("");
+                password.val("");
+                userId.val("");
+                Swal.fire('Perfecto!', 'Hemos creado tu usuario. Activalo con el correo que te enviamos a tu casilla', 'success')           
+            } else {
+                if(data.code == 2) {
+                    Swal.fire('Error', data.msg, 'warning')           
+                }
+
+                if(data.errors.length > 0) {
+                    data.errors.forEach(value => {
+                        $(`#${value.param}`).addClass('is-invalid');
+                        $(`#${value.param}Feedback`).html(value.msg);
+                    });
+                }
+                
+            }
+        });
+    }
+</script>

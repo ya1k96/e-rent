@@ -16,4 +16,5 @@ if (!firebase.apps.length) {
   firebase.initializeApp(config);
 }
 
+
 module.exports = {firebase};

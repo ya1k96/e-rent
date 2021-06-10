@@ -31,4 +31,4 @@ function setStorage(){
     this.storage = admin.storage();
 }
 
-module.exports = getBucket;
+module.exports = {getBucket, admin};

@@ -1,20 +1,10 @@
 const invoiceModel = require('../models/invoice');
-const paymentsModel = require('../models/payment');
 const contractModel = require('../models/contract');
-const invoicePDF = require('../functions/invoice');
-const {firebase} = require('../functions/firebase');
+const { isUser, isAdmin } = require('../middlewares/auth');
 
-module.exports = (app) => {
-    let middleware = (req,res,next) => {
-      var user = firebase.auth().currentUser;
-      if(user) {
-          next();
-      } else {
-        let url = req.protocol +'://'+ req.get('host') +'/login';
-        return res.redirect(url);
-      }
-    }
-    app.get('/', middleware, async (req, res) => {
+module.exports = (app) => {    
+
+    app.get('/', isAdmin, async (req, res) => {
       let day = (new Date()).getDate();
       let month = (new Date()).getMonth() + 1;
       let contracts = await contractModel.find({}).populate({
@@ -42,7 +32,7 @@ module.exports = (app) => {
       return res.render('home/index', {data});
     });
 
-    app.get('/inquilinos', middleware, async(req, res) => {
+    app.get('/inquilinos', isAdmin, async(req, res) => {
       let data = {};
       if(req.query.status) {
         data.status = {
@@ -73,7 +63,7 @@ module.exports = (app) => {
 
     })
 
-    app.post('/inquilinos/add', middleware, (req,res) => {
+    app.post('/inquilinos/add', isAdmin, (req,res) => {
       const body = req.query;
       let contract = {
         name: body.name,
@@ -112,14 +102,14 @@ module.exports = (app) => {
       return res.render('auth/login');
     });
 
-    app.get('/invoice', middleware, async (req, res) => {
+    app.get('/invoice', isAdmin, async (req, res) => {
       const invoices = await invoiceModel.find({})
       .populate('contract_id')
       console.log(invoices)
       return res.render('facturas/index', {invoices});
     });
 
-    app.get('/invoice/detail/:id', middleware, async (req, res) => {
+    app.get('/invoice/detail/:id', async (req, res) => {
       const id = req.params.id;
       const invoice = await invoiceModel.findById(id)
       .populate(['contract_id','payment']);

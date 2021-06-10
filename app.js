@@ -3,6 +3,8 @@ const app = new express();
 const mongoose= require('mongoose');
 const webpush = require('web-push');
 const Agenda = require('agenda');
+const session = require('express-session');
+
 require('dotenv').config();
 
 const contractModel = require('./models/contract');
@@ -52,6 +54,16 @@ db.on("error", function(er){
     console.log("No se pudo conectar a la base de datos")
     console.log(er);   
 })
+
+app.use(session({
+    secret: process.env.SECRET,
+    resave: true,
+    saveUninitialized: true,
+    user: null,
+    token: null,
+    role: null,
+    logged: false
+}))
 
 app.use((req, res, next) => {
 	res.header('Access-Control-Allow-Origin', '*');

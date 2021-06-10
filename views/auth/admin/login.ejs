@@ -1,0 +1,104 @@
+<%- include('../../partials/head'); -%>
+<style>
+
+</style>
+<div class="login-box">
+    <img src="../../images/icons/eRent144x144.png">
+    <p clasS="text-muted">e-Rent</p>
+    <p class="text-muted">Administrador</p>
+    <h5 class="text-muted">Ingresar</h5>
+        <div class="col-md-4 col-sm-8">
+            <input type="text" class="form-control" placeholder="Usuario" id="username">
+    
+        </div>
+        <div class="col-md-4 col-sm-8 pt-2">
+            <input type="text" class="form-control" placeholder="Contraseña" id="password">
+        </div>
+
+        <div class="row pt-4">
+            <button class="btn btn-info btn-lg" onclick="login()">Ingresar</button>                       
+        </div>
+        <br>
+        <!-- <p class="text-muted" style="font-size: .9rem;">ingresar con</p>
+        <button class="btn btn-outline-info p-1" style="width: 10rem;" onclick="loginWithGoogle()">
+        <img src="../../icons/google.svg"></button> -->
+</div>
+<%- include('../../partials/footer'); -%>
+<script src="https://www.gstatic.com/firebasejs/8.5.0/firebase-auth.js"></script>
+<script>
+    $(function() {
+        var firebaseConfig = {
+            apiKey: "AIzaSyDyjuCMt0nGfwZkBZXTNutSvkZyS6tvpFw",
+            authDomain: "e-rent-16ae4.firebaseapp.com",
+            databaseURL: "https://e-rent-16ae4.firebaseio.com",
+            projectId: "e-rent-16ae4",
+            storageBucket: "e-rent-16ae4.appspot.com",
+            messagingSenderId: "852609468771",
+            appId: "1:852609468771:web:651bc3cedfe83c876beb56"
+        };
+        firebase.initializeApp(firebaseConfig);
+    })
+
+    function loginWithGoogle() {
+        var provider = new firebase.auth.GoogleAuthProvider();
+        firebase.auth()
+        .signInWithPopup(provider)
+        .then((result) => {
+            /** @type {firebase.auth.OAuthCredential} */
+            var credential = result.credential.idToken;
+            let token_id = credential;
+            fetch("googleLogin", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({token_id}),
+            })
+            .then(function(response) {
+                return response.json();
+            })  
+            .then(function(response) {
+                if(response.ok) {
+                    Swal.fire('Error',response.msg, 'warning');
+                } else {
+                    window.location.href = './';
+                }
+            })              
+        }).catch((error) => {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            // The email of the user's account used.
+            var email = error.email;
+            // The firebase.auth.AuthCredential type that was used.
+            var credential = error.credential;
+            // ...
+        });
+    }
+
+    function login() {
+        let username = $("#username").val();
+        let password = $("#password").val();
+
+        if(username.length == 0) {
+            Swal.fire('Completa los campos', `Escribe tu email`, 'warning')
+        }
+        if(password.length == 0) {
+            Swal.fire('Completa los campos', `Escribe tu contraseña`, 'warning')           
+        }
+
+        sendLogin(username, password, function(data) {
+            console.log(data)
+            if(data.ok) {
+                window.location.href = './';
+            } else {
+                let message = (data.error.code == 'auth/too-many-requests') ? 
+                "Has hecho muchos intentos. Intenta nuevamente mas tarde o pide recuperar tu cuenta." : "Email o contraseña incorrectos. Comprueba tus datos.";
+
+                Swal.fire('Error', message, 'warning')           
+
+            }
+        });
+    }
+
+</script>
