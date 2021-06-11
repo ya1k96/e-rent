@@ -72,7 +72,7 @@
 
         if(data.ok) {
             if(data.invoices.length > 0) {
-                data.invoices.forEach(invoice => {
+                data.invoices.forEach((invoice, index) => {
                 let date = new Date();
                 date.setMonth(invoice.month - 1);
                 let item = ` <a href="/invoice/detail/${invoice._id}">
@@ -82,7 +82,7 @@
                                     <span>${invoice.contract_id.surname}</span>
                                 </p>
                                 <span>
-                                    <span>${moment(date).format("MMMM")}</span>
+                                    <span class="text-capitalize">${moment(date).format("MMMM")}</span>
                                     <br>
                                     ${
                                         invoice.payed ? '<p class="subtitle pagado">Pagado</span></p>': '<p class="subtitle pendiente">Pendiente</p> '
@@ -90,8 +90,11 @@
                                 </span>                                          
                                 
                             </div>
-                        </a>`;
+                        </a>
+                        ${(index < data.invoices.length -1) ? '<hr>': ''}`;
+                        
                     proximosVencimientos.append(item);
+
                 })
                 $("#loader").fadeOut();
                 
