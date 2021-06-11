@@ -18,70 +18,93 @@
 
 </style>
 <%- include('../partials/navbar'); -%>
-<h5 class="text-center">Facturas</h5>
-<div class="row midd-content p-3" style="margin-top: 3rem;">   
-    <div class="card mx-2 col-md-5 col-12" id="proximos-vencimientos">
-        <input id="total-invoices" type="hidden" value="<%= invoices.length %>">
-        <% for(var i = 0; i < invoices.length; i++) {%>
-            <a href="/invoice/detail/<%= invoices[i]._id %>">
-                <div class="row center">                        
-                        <img src="/icons/invoice.svg" alt="" style="height: 11%; width: 11%;">  
-                        <p><%= invoices[i].contract_id.name %> <br>
-                            <span><%= invoices[i].contract_id.surname %></span>
-                        </p>
-                        <span>
-                            <span id="invoice-month-<%= i %>">
-                                <%= invoices[i].month %>
-                            </span>
-                            <br>
-                            <% if(invoices[i].payed) { %>
-                                <p class="subtitle pagado">Pagado</span></p>
-                                <!-- <span class="fui-check pagado"> -->
-                            <% } else { %>
-                                <p class="subtitle pendiente">Pendiente</p>
-                            <% } %>
-                                
-                        </span>                                          
-                        
-                </div>
-            </a>
-                
-                    
-            
-            <% if(i < (invoices.length - 1) ) { %>
-                <hr>
-            <% }%>
-        <% }%>
-
+<h5 class="text-center">Facturas generadas</h5>
+<div class="row midd-content p-1" style="margin-top: 3rem;">   
+    <div class="card mx-2 col-md-5 col-12 py-4" id="proximos-vencimientos">
+        <div class="login-box" style="height: 100%;">
+            <p class="text-muted">Aplica los filtros para buscar tus facturas</p>
+        </div>
     </div>    
 
-    <div class="card mx-2 col-md-2 col-12">
-        <p>Filtrar</p>
-        <select class="custom-select">
-            <option selected>Año</option>
-            <option value="1">One</option>
-            <option value="2">Two</option>
-            <option value="3">Three</option>
-        </select>
+    <div class="card mx-2 col-md-3 col-12">
+        <p class="mb-1"><strong>Filtrar por fecha</strong></p>
+        <hr>
+        <p class="mb-1">Desde</p>
+        <input class="form-control" type="date" id="from">
+        <p class="mb-1">Hasta</p>
+        <input class="form-control" type="date" id="until">
+        <button class="btn btn-info rounded mt-4" onclick="invoices()">Aplicar</button>
     </div>
                 
 </div>
 
 <%- include('../partials/footer'); -%>
 <script>
-    (function(){
-        let len = $("#total-invoices").val();
-        let date = new Date();
+    function invoices() {
+        $("#loader").fadeIn();
 
-        for(let i = 0; i<len; i++) {
-            let invoiceMonth = $("#invoice-month-" + i);
-            date.setMonth(parseInt(invoiceMonth.html()) - 1);
+        let from = $("#from").val();
+        let until = $("#until").val();
 
-            let momentMonth = moment(date).format("MMMM");
-            invoiceMonth.html("Mes de " + momentMonth)
-            .css('font-weight', 'bold')
-            .css('text-transform', 'capitalize');
+        getInvoices(from, until, drawInvoices);
+    }
+
+    function getInvoices(from, until, cb) {
+        let data = {from, until};
+        fetch("invoice", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        })
+        .then(function(response) {
+            return response.json();
+        })  
+        .then(function(response) {
+            cb(response);
+        }) 
+        
+    }
+
+    function drawInvoices(data) {
+        let proximosVencimientos = $("#proximos-vencimientos");
+        proximosVencimientos.html("");
+
+        if(data.ok) {
+            if(data.invoices.length > 0) {
+                data.invoices.forEach(invoice => {
+                let date = new Date();
+                date.setMonth(invoice.month - 1);
+                let item = ` <a href="/invoice/detail/${invoice._id}">
+                            <div class="row center">                        
+                                <img src="/icons/invoice.svg" alt="" style="height: 11%; width: 11%;">  
+                                <p>${invoice.contract_id.name} <br>
+                                    <span>${invoice.contract_id.surname}</span>
+                                </p>
+                                <span>
+                                    <span>${moment(date).format("MMMM")}</span>
+                                    <br>
+                                    ${
+                                        invoice.payed ? '<p class="subtitle pagado">Pagado</span></p>': '<p class="subtitle pendiente">Pendiente</p> '
+                                    }                                                                                                           
+                                </span>                                          
+                                
+                            </div>
+                        </a>`;
+                    proximosVencimientos.append(item);
+                })
+                $("#loader").fadeOut();
+                
+            } else {
+                let notice = `<div class="login-box" style="height: 100%;">
+                                <p class="text-muted">Parece que no encontramos nada</p>
+                            </div>`;
+                proximosVencimientos.append(notice);
+                $("#loader").fadeOut();
+            }
+            
+
         }
-
-    })()
+    }
 </script>           

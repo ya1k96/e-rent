@@ -9,8 +9,6 @@ const sendVerificationMail = require('../functions/sendVerificationMail');
 require('dotenv').config();
 const secret = process.env.SECRET;
 
-// await sendVerificationMail("yamilm61@gmail.com");
-
   module.exports = (app) => {
     app.route('/login')
     .get( async (req, res) => {  

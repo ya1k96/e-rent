@@ -97,16 +97,19 @@ module.exports = (app) => {
 
     });
 
-    app.get('/login', (req, res) => {
+    app.route('/invoice')
+    .get(isAdmin, async (req, res) => {
+      return res.render('facturas/index');
+    })
+    .post(isAdmin, async (req, res) => {
+      const from = req.body.from;
+      const until = req.body.until;
       
-      return res.render('auth/login');
-    });
-
-    app.get('/invoice', isAdmin, async (req, res) => {
       const invoices = await invoiceModel.find({})
+      .where('createdAt').gt(from).lt(until)
       .populate('contract_id')
-      console.log(invoices)
-      return res.render('facturas/index', {invoices});
+
+      return res.json({ok: true, invoices});
     });
 
     app.get('/invoice/detail/:id', async (req, res) => {

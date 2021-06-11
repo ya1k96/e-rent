@@ -5,7 +5,6 @@ function addContract(e) {
     forma = forma + '&increment_porc=' + (increment_porc.split("%"))[1];
 
     $.post("/inquilinos/add?" + forma, function( data ) {
-        console.log(data);
         if(data.ok) {
             window.location.href = '?status=susccess';
         } else {
