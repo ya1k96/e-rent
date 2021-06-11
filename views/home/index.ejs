@@ -1,19 +1,12 @@
 <%- include('../partials/head'); -%>
-<%- include('../partials/navbar'); -%>
-    <div class="row-s center midd-content dashboard">
+<%- include('../partials/navbar', {userData}); -%>
+    <div class="row-s center midd-content dashboard" style="margin-top: .4rem;">
         <a href="/inquilinos">
             <div class="card m-2 column margin-10">
                 <img src="./icons/users.png" alt="">
                 <p class="text-center">Inquilinos</p>            
             </div>
         </a>
-        <!-- <a href="#" data-toggle="modal" data-target="#generar-recibo">
-            <div class="card m-2 column margin-10">
-                <img src="./icons/invoice-2.png" alt="">
-                <p class="text-center">Recibos</p>
-               
-            </div>
-        </a> -->
         <a href="/invoice">
             <div class="card m-2 column margin-10">
                 <img src="./icons/invoice.png" alt="">

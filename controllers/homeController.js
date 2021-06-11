@@ -29,10 +29,19 @@ module.exports = (app) => {
         month,
         renters
       };
-      return res.render('home/index', {data});
+      const userData = {
+        name: req.session.name,
+        role: req.session.role
+      };
+
+      return res.render('home/index', {data, userData});
     });
 
     app.get('/inquilinos', isAdmin, async(req, res) => {
+      const userData = {
+        name: req.session.name,
+        role: req.session.role
+      };
       let data = {};
       if(req.query.status) {
         data.status = {
@@ -43,10 +52,14 @@ module.exports = (app) => {
 
       data.inquilinos = await contractModel.find({});    
 
-      return res.render('inquilinos/index', {data: data});
+      return res.render('inquilinos/index', {data: data, userData});
     });
 
     app.get('/inquilinos/detail/:id', async (req, res) => {
+      const userData = {
+        name: req.session.name,
+        role: req.session.role
+      };
       const id = req.params.id;
       if(!id) {
         return res.redirect('/');
@@ -59,7 +72,7 @@ module.exports = (app) => {
         return res.redirect('/');
       }
 
-      return res.render('inquilinos/detail', {contract});
+      return res.render('inquilinos/detail', {contract, userData});
 
     })
 
@@ -99,7 +112,11 @@ module.exports = (app) => {
 
     app.route('/invoice')
     .get(isAdmin, async (req, res) => {
-      return res.render('facturas/index');
+      const userData = {
+        name: req.session.name,
+        role: req.session.role
+      };
+      return res.render('facturas/index', {userData});
     })
     .post(isAdmin, async (req, res) => {
       const from = req.body.from;
@@ -113,11 +130,15 @@ module.exports = (app) => {
     });
 
     app.get('/invoice/detail/:id', async (req, res) => {
+      const userData = {
+        name: req.session.name,
+        role: req.session.role
+      };
       const id = req.params.id;
       const invoice = await invoiceModel.findById(id)
       .populate(['contract_id','payment']);
       
-      return res.render('facturas/detail', {invoice});
+      return res.render('facturas/detail', {invoice, userData});
     });
 
     
