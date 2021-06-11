@@ -8,9 +8,32 @@
         <p class="text-muted m-0" style="font-size: 80%;"><span class="fui-user"></span><strong><%= userData.name %></strong></p>
       </div>
       <div class="col-md-1 offset-2 col-3">
-        <button type="button" class="btn btn-outline-info">Salir</button>
+        <button type="button" class="btn btn-outline-info" data-toggle="modal" data-target="#modalLogout">Salir</button>
       </div>
 
     </div>
   </header>
 
+<!-- Modal -->
+<div class="modal fade" id="modalLogout" tabindex="-1" role="dialog" aria-labelledby="exampleModal3Label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModal3Label">¿Estas seguro/a que quieres salir?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <br>
+
+      </div>
+      <div class="d-flex justify-content-center p-4">
+        <button type="button" class="btn btn-secondary mr-2" data-dismiss="modal">Cancelar</button>
+        <a href="./logout"">
+          <button type="button" class="btn btn-info">Si</button>
+        </a>
+
+      </div>
+     
+    </div>
+  </div>
+</div>

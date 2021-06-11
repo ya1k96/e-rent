@@ -19,6 +19,13 @@ La vista inicial pretende dar accesibilidad, dejando a la mano funciones especif
  <img src="./docs/images/inquilinosview.JPG"/>
  <img src="./docs/images/inquilinosview-mobile.JPG"/>
 
+# Vista perfil inquilino
+ <img src="./docs/images/inquilinoView.JPG"/>
+
+# Vista de Facturas
+ <img src="./docs/images/invoicesView.JPG"/>
+
+
 ## Formulario de registro de contrato/inquilino
  <img src="./docs/images/newcontract.JPG"/>
  <img src="./docs/images/newcontract-mobile.JPG"/>

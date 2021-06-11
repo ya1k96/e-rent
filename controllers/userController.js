@@ -10,6 +10,17 @@ require('dotenv').config();
 const secret = process.env.SECRET;
 
   module.exports = (app) => {
+    app.get('/logout', (req,res) => {
+      if(req.session.logged) {
+        req.session.logged = false;
+        req.session.token = null;
+        req.session.role = null;
+        req.session.name = null;
+      }
+
+      res.redirect('./login')
+    });
+
     app.route('/login')
     .get( async (req, res) => {  
       if(req.session.logged)  return res.redirect('./');

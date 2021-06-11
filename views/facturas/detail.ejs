@@ -9,14 +9,15 @@
         }
         .container.row-s.center.midd-content {
             width: 95% !important;
+            height: 55%;
         }
     }
 </style>
 <%- include('../partials/navbar'); -%>
-    <div class="container row-s center midd-content" style="height: 55%; width: 55%;">
-        <div class="card">
+    <div class="container row-s center midd-content mt-3">
+        <div class="card col-md-6">
             <div class="row">
-                <div class="col-md-6 col-12 pl-4">
+                <div class="col-md-12 col-12 pl-4">
                     <h6 class="font-weight-bold">Mes de
                         <span id="invoice-month">
                             <%= invoice.period %>
@@ -35,18 +36,20 @@
                         </p>
                     <% } %> 
                     <br>    
+                    <div class="row center midd-content">
+                        <button class="btn btn-success" style="cursor: text;"
+                        <% if(!invoice.payed) {%> <%= 'disabled' %> <% } %> 
+                        ><span class="fui-check"></span> Pagado</button>
+                        <% if(invoice.payed) {%> 
+                            <button class="btn btn-outline-info"><span class="fui-clip"></span> 
+                                <a href="/payments/detail/<%= invoice._id + '/' +invoice.payment._id %>">Descargar recibo</a>
+                            </button>
+                        <% } %>
 
-                    <button class="btn btn-success" style="cursor: text;"
-                    <% if(!invoice.payed) {%> <%= 'disabled' %> <% } %> 
-                    ><span class="fui-check"></span> Pagado</button>
-                    <% if(invoice.payed) {%> 
-                        <button class="btn btn-outline-info"><span class="fui-clip"></span> 
-                            <a href="/payments/detail/<%= invoice._id + '/' +invoice.payment._id %>">Descargar recibo</a>
-                        </button>
-                    <% } %>
+                    </div>
                     
                 </div>
-                <div class="col-md-5 offset-md-1 col-12" id="inquilino-card">
+                <!-- <div class="col-md-5 offset-md-1 col-12" id="inquilino-card">
                     <p class="text-muted m-0" style="font-size: 70%;">Sobre el inquilino</p>
                     <%= invoice.contract_id.name + ' ' + invoice.contract_id.surname %>  <br>              
                     <img src="/icons/neutral-user.png" alt="" style="height: 50%; width: 50%;">
@@ -60,7 +63,7 @@
                         
                     </p>
                     <input type="hidden" id="id-invoice" value="<%= invoice._id %>">
-                </div>
+                </div> -->
                 <%if(!invoice.payed) {%> 
                     <div class="col-12 col-md-8 offset-md-2 mt-3">
                         <button class="btn btn-outline-info btn-lg btn-block" onclick="newPayment()">Generar recibo</button>
