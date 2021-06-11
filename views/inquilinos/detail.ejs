@@ -14,80 +14,121 @@
     .fui-check {
         color: rgb(21, 109, 21);
     }
+    .text-invoice-detail {
+        padding-top: .1rem;
+        font-size: 80%;
+    }
+    p.text-invoice-detail.text-center {
+        padding-top: .1rem;
+    }
+    .text-invoice-detail > p {
+        font-size: 80%;
+    }
    
 </style>
-<%- include('../partials/navbar'); -%>
-<div class="row">
+<%- include('../partials/navbar', {userData}); -%>
+<div class="row mt-4">
     <div class="offset-md-2 col-md-5 col-12">
         <div class="card">
             <h4>Facturas</h4>
             <div id="proximos-vencimientos">
-                <input id="total-invoices" type="hidden" value="<%= contract.invoices.length %>">
-                <% for(var i = 0; i < contract.invoices.length; i++) {%>
-                    <a href="/invoice/detail/<%= contract.invoices[i]._id %>">
-                        <div class="row center">                        
-                                <img src="/icons/invoice.svg" alt="" style="height: 11%; width: 11%;">  
-                                <span>
-                                    <span id="invoice-month-<%= i %>">
-                                        <%= contract.invoices[i].month %>
-                                    </span>
-                                    <br>
-                                    <% if(contract.invoices[i].payed) { %>
-                                        <p class="subtitle">Pagado <span class="fui-check"></span></p>
-                                    <% } %>
-                                        
-                                </span>                                          
-                                
-                        </div>
-                    </a>
-                        
-                            
-                    
-                    <% if(i < (contract.invoices.length - 1) ) { %>
-                        <hr>
-                    <% }%>
-                <% }%>
-
+                                    
             </div>
         </div>
     </div>
     <div class="col-md-3 col-12">
-        <div class="card">
-            <p class="text-muted m-0 text-center" style="font-size: 70%;">Sobre el inquilino</p>
-            <p class="text-center"><%= contract.name + ' ' + contract.surname %></p>
-            <img src="/icons/userDetail.svg" alt="" style="height: 50%; width: 50%; align-self: center;">
-            <p  class="text-invoice-detail text-center mt-3">
-                Inicio del contrato:
-                <strong>
-                    <span id="date-field" class="font-weight-bold">
-                        <%= contract.begin %>                
-                    </span>
-                </strong>
-                
-            </p>
+        <div class="card p-3" id="sobre-inquilino">
+            
         </div>
     </div>
 </div>
 <%- include('../partials/footer'); %>
 <script>
     $(function() {
-        let len = $("#total-invoices").val();
-        let date = new Date();
+        getInvoices();               
+        $("#loader").fadeOut();            
+    });   
 
-        for(let i = 0; i<len; i++) {
-            let invoiceMonth = $("#invoice-month-" + i);
-            date.setMonth(parseInt(invoiceMonth.html()) - 1);
+    function getInvoices() {
+        let path = window.location.pathname;
 
-            let momentMonth = moment(date).format("MMMM");
-            invoiceMonth.html("Mes de " + momentMonth)
-            .css('font-weight', 'bold')
-            .css('text-transform', 'capitalize');
+        fetch(path, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })
+        .then(function(response) {
+            return response.json();
+        })  
+        .then(function(response) {
+            console.log(response)
+            drawInvoices(response);
+        }) 
+        
+    }
+    function drawAboutRenter(contract) {
+        let about = `<p class="text-muted m-0 text-center" style="font-size: 70%;">Sobre el inquilino</p>
+            <p class="text-center">${contract.name + ' ' + contract.surname}</p>
+            <img src="/icons/userDetail.svg" alt="" style="height: 50%; width: 50%; align-self: center;">
+            <p  class="text-invoice-detail text-center mt-1">
+                Inicio del contrato:
+                <span class="font-weight-bold text-center">
+                    ${moment(contract.begin).format("L")}                
+                </span>
+            
+            </p>
+            <p  class="text-invoice-detail text-center mt-1">
+                Fin del contrato:                
+                    <span class="font-weight-bold text-center">
+                        ${moment(contract.end).format("L")}                
+                    </span>                
+                            
+            </p>
+            <p  class="text-invoice-detail text-center mt-1">
+                Periodo de aumento:                                
+                    <span class="font-weight-bold text-center">
+                        ${contract.increment_month} meses                
+                    </span>                
+            </p>
+            <p  class="text-invoice-detail text-center mt-1">
+                Monto Inicial                         
+                    <span class="font-weight-bold text-center">
+                        ${contract.price} ARS                 
+                    </span>                
+            </p>`;
+        $("#sobre-inquilino").append(about);
+    }
+    function drawInvoices(data) {
+        let proximosVencimientos = $("#proximos-vencimientos");
+        proximosVencimientos.html("");
+
+        if(data.ok) {
+            if(data.contract.invoices.length > 0) {
+                drawAboutRenter(data.contract)
+                data.contract.invoices.forEach((invoice, index) => {
+                let date = new Date();
+                date.setMonth(invoice.month - 1);
+                let item = ` <a href="/invoice/detail/${invoice._id}">
+                    <div class="row center">                        
+                        <img src="/icons/invoice.svg" alt="" style="height: 11%; width: 11%;">                         
+                        <span>
+                            <span class="text-capitalize">${moment(date).format("MMMM")}</span>
+                            <br>
+                            ${
+                                invoice.payed ? '<p class="subtitle pagado">Pagado</span></p>': '<p class="subtitle pendiente">Pendiente</p> '
+                            }                                                                                                          
+                        </span>                                          
+                        
+                    </div>
+                </a>
+                        ${(index < data.contract.invoices.length -1) ? '<hr>': ''}`;
+                        
+                    proximosVencimientos.append(item);
+
+                })
+                
+            }
         }
-
-        let dateField = $("#date-field");
-        let momentDate = moment(dateField.html()).format("ll");
-        
-        dateField.html(momentDate);
-        
-    })()
+    }
 </script>

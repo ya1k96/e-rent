@@ -55,11 +55,16 @@ module.exports = (app) => {
       return res.render('inquilinos/index', {data: data, userData});
     });
 
-    app.get('/inquilinos/detail/:id', async (req, res) => {
+    app.route('/inquilinos/detail/:id')
+    .get( async (req, res) => {
       const userData = {
         name: req.session.name,
         role: req.session.role
       };
+
+      return res.render('inquilinos/detail', {userData});
+    })
+    .post(async (req, res) => {
       const id = req.params.id;
       if(!id) {
         return res.redirect('/');
@@ -72,8 +77,7 @@ module.exports = (app) => {
         return res.redirect('/');
       }
 
-      return res.render('inquilinos/detail', {contract, userData});
-
+      return res.json({ok: true, contract})
     })
 
     app.post('/inquilinos/add', isAdmin, (req,res) => {
