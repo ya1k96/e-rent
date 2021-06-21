@@ -6,6 +6,7 @@ Como aun esta en pañales, las funciones estan siendo tratadas, codificadas e im
 
 ## Vista de registro
  <img src="./docs/images/registerView.png"/>
+ El registro es posbile unicamente con usuarios que tengan un contrato vigente. El nro de usuario se otorga al crear un nuevo contrato y se facilitara en el recibo de la factura.
 
 ## Vista del login
  <img src="./docs/images/loginview.png"/>

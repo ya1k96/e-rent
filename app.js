@@ -3,7 +3,6 @@ const app = new express();
 const mongoose= require('mongoose');
 const webpush = require('web-push');
 const Agenda = require('agenda');
-const session = require('express-session');
 
 require('dotenv').config();
 
@@ -55,16 +54,6 @@ db.on("error", function(er){
     console.log(er);   
 })
 
-app.use(session({
-    secret: process.env.SECRET,
-    resave: true,
-    saveUninitialized: true,
-    user: null,
-    token: null,
-    role: null,
-    logged: false
-}))
-
 app.use((req, res, next) => {
 	res.header('Access-Control-Allow-Origin', '*');
 	res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
@@ -109,7 +98,7 @@ userController(app);
 homeController(app);
 paymentsController(app);
 
-app.listen((process.env.PORT||3000),() => {
+app.listen((process.env.PORT||8080),() => {
 
     console.log('SERVER RUN')
 })

@@ -3,10 +3,9 @@ require('dotenv').config();
 const secret = process.env.SECRET;
 
 let isUser = (req,res,next) => {
-    console.log(req.session)
-    const token = req.session.token;
+    const token = req.body.token;
     if(!token) {
-        return res.redirect('./login');
+        return res.redirect('/');
     }
     jwt.verify(token, secret, function(err, decoded) {
         if(err) {
@@ -20,7 +19,7 @@ let isUser = (req,res,next) => {
 }
 
 let isAdmin = (req,res, next) => {
-    const token = req.session.token;
+    const token = req.body.token;
     if(!token) {
         return res.redirect('./login');
     }
@@ -28,7 +27,7 @@ let isAdmin = (req,res, next) => {
     jwt.verify(token, secret, function(err, decoded) {
         if(err) {
             console.log(err)
-            return res.redirect('./login');
+            return res.redirect('/');
         }
         if(decoded) {
             if(decoded.role === 'admin') {

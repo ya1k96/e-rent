@@ -9,19 +9,8 @@ const sendVerificationMail = require('../functions/sendVerificationMail');
 require('dotenv').config();
 const secret = process.env.SECRET;
 
-  module.exports = (app) => {
-    app.get('/logout', (req,res) => {
-      if(req.session.logged) {
-        req.session.logged = false;
-        req.session.token = null;
-        req.session.role = null;
-        req.session.name = null;
-      }
-
-      res.redirect('./login')
-    });
-
-    app.route('/login')
+  module.exports = (app) => {  
+    app.route('/api/login')
     .get( async (req, res) => {  
       if(req.session.logged)  return res.redirect('./');
       return res.render('auth/login');
@@ -45,7 +34,7 @@ const secret = process.env.SECRET;
       async (req, res) => {
       const email = req.body.email;
       const password = req.body.password;
-
+        console.log(req.body)
       let user = await usersModel.findOne({email}).populate('user_role');
       
       const errors = validationResult(req);
@@ -62,18 +51,18 @@ const secret = process.env.SECRET;
           console.log(user)
           const publicUser = {
             email: user.email,
+            name: user.name,
             role: user.user_role.type        
           }
           let token = jwt.sign(publicUser, secret, { expiresIn: '2 days'});
-          //Definimos la sesion para el usuario
-          req.session.token = token;
-          req.session.role = user.user_role.type;
-          req.session.logged = true;
-          req.session.name = user.name;
 
           return res.json({ok: true, token})
         } else {
-          return res.json({ok: false, msg: 'Contraseña o Correo incorrectos.', code: 0})
+          return res.json({
+              ok: false, 
+              error: {msg: 'Contraseña o Correo incorrectos.', code:2}
+            }
+          )
         }
       }
 
@@ -146,8 +135,22 @@ const secret = process.env.SECRET;
     return res.json({ok: false, msg: 'Ha ocurrido un error, intenta nuevamente mas tarde.'})
   });
 
+  app.get('/api/verifyToken', async (req, res) => {
+    const token = req.query.token;  
+    jwt.verify(token, secret, function(err, decoded) {
+        if(err) {
+            return res.json({ok: false})
+        } else {
+          return res.json({
+            ok: true,
+            decoded
+          })
+        }
+        
+    });
+  });
+
   app.get('/userVerification', async (req, res) => {
-    console.log(req.query)
     const token = req.query.token;
     const email = req.query.email;
     const userToVerified = await usersModel.findOne({email});
