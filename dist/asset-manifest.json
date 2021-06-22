@@ -1,0 +1,26 @@
+{
+  "files": {
+    "main.css": "/static/css/main.9174cd90.chunk.css",
+    "main.js": "/static/js/main.92da863d.chunk.js",
+    "main.js.map": "/static/js/main.92da863d.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.7bd64e9d.js",
+    "runtime-main.js.map": "/static/js/runtime-main.7bd64e9d.js.map",
+    "static/js/2.12a6e0ef.chunk.js": "/static/js/2.12a6e0ef.chunk.js",
+    "static/js/2.12a6e0ef.chunk.js.map": "/static/js/2.12a6e0ef.chunk.js.map",
+    "static/js/3.f1cfc35e.chunk.js": "/static/js/3.f1cfc35e.chunk.js",
+    "static/js/3.f1cfc35e.chunk.js.map": "/static/js/3.f1cfc35e.chunk.js.map",
+    "index.html": "/index.html",
+    "static/css/main.9174cd90.chunk.css.map": "/static/css/main.9174cd90.chunk.css.map",
+    "static/js/2.12a6e0ef.chunk.js.LICENSE.txt": "/static/js/2.12a6e0ef.chunk.js.LICENSE.txt",
+    "static/media/flat-ui.css": "/static/media/lato-regular.e91c643c.woff",
+    "static/media/invoice.35972ed4.svg": "/static/media/invoice.35972ed4.svg",
+    "static/media/invoice.c6248e9f.png": "/static/media/invoice.c6248e9f.png",
+    "static/media/users.1746772c.png": "/static/media/users.1746772c.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.7bd64e9d.js",
+    "static/js/2.12a6e0ef.chunk.js",
+    "static/css/main.9174cd90.chunk.css",
+    "static/js/main.92da863d.chunk.js"
+  ]
+}

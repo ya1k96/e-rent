@@ -18,13 +18,7 @@ const secret = process.env.SECRET;
     .post( 
       check('password')
       .notEmpty()
-      .withMessage('Ingresa una contraseña'),
-      check('email').custom(async value => {
-        let user = await usersModel.findOne({email: value}) ;
-        if (!user) {
-          return Promise.reject('No existe ningun usuario registrado');
-        }
-      }),
+      .withMessage('Ingresa una contraseña'),      
       check('email')
       .isEmail()
       .withMessage('Correo invalido'),
@@ -34,9 +28,11 @@ const secret = process.env.SECRET;
       async (req, res) => {
       const email = req.body.email;
       const password = req.body.password;
-        console.log(req.body)
       let user = await usersModel.findOne({email}).populate('user_role');
-      
+
+      if(!user) {
+        return res.json({ok: false, error:{msg: 'Este usuario no esta registado', code: 1}})
+      }
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return res.json({ ok: false, errors: errors.array() });
@@ -44,7 +40,7 @@ const secret = process.env.SECRET;
 
       if(user) {  
         if(!user.confirmed) {
-          return res.json({ok: false, msg: 'Debes confirmar tu correo para poder ingresar', code: 4})
+          return res.json({ok: false, error:{ msg: 'Debes confirmar tu correo para poder ingresar', code: 4}})
         } 
 
         if( user.password === md5(password) ) {
@@ -56,7 +52,7 @@ const secret = process.env.SECRET;
           }
           let token = jwt.sign(publicUser, secret, { expiresIn: '2 days'});
 
-          return res.json({ok: true, token})
+          return res.json({ok: true, token, publicUser})
         } else {
           return res.json({
               ok: false, 

@@ -3,6 +3,7 @@ const app = new express();
 const mongoose= require('mongoose');
 const webpush = require('web-push');
 const Agenda = require('agenda');
+const path = require('path');
 
 require('dotenv').config();
 
@@ -90,8 +91,13 @@ const paymentsController = require('./controllers/payments');
 
 app.use(express.json());
 app.use(express.static('./public'));
-app.use(express.static('./views'));
-app.set('view engine', 'ejs');
+
+const pathFile = path.join(__dirname, 'dist' );
+app.use(express.static(pathFile));
+
+app.get('/', async function (request, response) {
+    response.sendFile('index.html', {root: 'dist'});
+});
 
 //Rutas
 userController(app);
