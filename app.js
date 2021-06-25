@@ -12,7 +12,13 @@ const contractModel = require('./models/contract');
 const dbUser = process.env.DBUSER;
 const dbPassword = process.env.DBPASSWORD;
 const dbUrl = process.env.DBURL;
-const mongoConnectionString = `mongodb+srv://${dbUser}:${dbPassword}@${dbUrl}`;
+const produccion = process.env.PRODUCTION;
+let mongoConnectionString = `mongodb+srv://${dbUser}:${dbPassword}@${dbUrl}`;
+
+if(produccion === 'false') {
+    mongoConnectionString = 'mongodb://127.0.0.1:27017'
+}
+   
 mongoose.connect(mongoConnectionString, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
 
