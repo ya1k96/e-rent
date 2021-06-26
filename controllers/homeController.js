@@ -1,6 +1,7 @@
 const invoiceModel = require('../models/invoice');
 const contractModel = require('../models/contract');
 const { isUser } = require('../middlewares/auth');
+const { check, validationResult } = require('express-validator');
 const moment = require('moment');
 
 module.exports = (app) => {    
@@ -15,7 +16,7 @@ module.exports = (app) => {
       })
     });
 
-    app.get('/renters',  async(req, res) => {
+    app.get('/api/renters',  async(req, res) => {
       let renters = await contractModel.find({});    
 
       return res.json({
@@ -49,18 +50,44 @@ module.exports = (app) => {
       return res.json({ok: true, contract})
     })
 
-    app.post('/api/renters/add',  (req,res) => {
-      const body = req.query;
+    app.post('/api/renters/add', 
+    check('name')
+    .notEmpty()
+    .withMessage('El nombre es requerido'),         
+    check('lastname')
+    .notEmpty()
+    .withMessage('El apellido es requerido'), 
+    check('price')
+    .notEmpty()
+    .withMessage('El monto en requerido'), 
+    check('begin')
+    .notEmpty()
+    .withMessage('Establece la fecha de inicio del contrato'), 
+    check('increment_month')
+    .notEmpty()
+    .withMessage('Establece el periodo de incremento'), 
+    check('increment_porc')
+    .notEmpty()
+    .withMessage('Establece el porcentaje de incremento'), 
+    (req,res) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.json({ ok: false, errors: errors.array() });
+      }
+
+      const body = req.body;
+      let end = body.begin.split('-');
+      end[0] = parseInt(end[0]) + parseInt((body.months/12));
       let contract = {
         name: body.name,
-        surname: body.surname,
+        surname: body.lastname,
         price: parseInt(body.price),
         begin: new Date(body.begin),
-        end: new Date(body.end),
-        increment_porc: parseInt(body.increment_porc),
+        end: new Date(end.join('/')),
+        increment_porc: parseInt(body.increment_porc) || 6,
         increment_month: parseInt(body.increment_month)
       };
-
+      console.log(contract)
       contractModel.create(contract, async (err,doc) => {
         if(err) {
           return res.json({

@@ -1,0 +1,79 @@
+[{
+  "_id": {
+    "$oid": "60a92867b50407128c422352"
+  },
+  "pay_day": 28,
+  "increment_month": 6,
+  "name": "Lucas",
+  "surname": "Bruzzo",
+  "price": 8500,
+  "begin": {
+    "$date": "2021-05-15T00:00:00Z"
+  },
+  "end": {
+    "$date": "2023-05-15T00:00:00Z"
+  },
+  "increment_porc": 15,
+  "invoices": [
+    {
+      "$oid": "60ab07157ad9450c30afd516"
+    },
+    {
+      "$oid": "60bedb9532842c186c667b2c"
+    }
+  ],
+  "__v": 1,
+  "user": {
+    "$oid": "60c24958c2fcf80f946de435"
+  }
+},{
+  "_id": {
+    "$oid": "60a938dc72088d2704960d69"
+  },
+  "pay_day": 21,
+  "increment_month": 6,
+  "name": "Sonia",
+  "surname": "Meza",
+  "price": 6000,
+  "begin": {
+    "$date": "2021-05-15T00:00:00Z"
+  },
+  "end": {
+    "$date": "2023-05-15T00:00:00Z"
+  },
+  "increment_porc": 15,
+  "invoices": [
+    {
+      "$oid": "60ab07157ad9450c30afd517"
+    },
+    {
+      "$oid": "60bedb9532842c186c667b2d"
+    }
+  ],
+  "__v": 1
+},{
+  "_id": {
+    "$oid": "60a9392972088d2704960d6a"
+  },
+  "pay_day": 21,
+  "increment_month": 6,
+  "name": "Ramon",
+  "surname": "Navarro",
+  "price": 11000,
+  "begin": {
+    "$date": "2021-05-15T00:00:00Z"
+  },
+  "end": {
+    "$date": "2023-05-15T00:00:00Z"
+  },
+  "increment_porc": 15,
+  "invoices": [
+    {
+      "$oid": "60ab07157ad9450c30afd518"
+    },
+    {
+      "$oid": "60bedb9532842c186c667b2e"
+    }
+  ],
+  "__v": 1
+}]

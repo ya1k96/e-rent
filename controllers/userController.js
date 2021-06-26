@@ -26,8 +26,8 @@ const secret = process.env.SECRET;
       .notEmpty()
       .withMessage('Ingresa tu correo'),
       async (req, res) => {
-      const email = req.body.email;
-      const password = req.body.password;
+        const email = req.body.email;
+        const password = req.body.password;
       let user = await usersModel.findOne({email}).populate('user_role');
 
       if(!user) {
@@ -44,7 +44,6 @@ const secret = process.env.SECRET;
         } 
 
         if( user.password === md5(password) ) {
-          console.log(user)
           const publicUser = {
             email: user.email,
             name: user.name,

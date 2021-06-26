@@ -18,7 +18,7 @@ let mongoConnectionString = `mongodb+srv://${dbUser}:${dbPassword}@${dbUrl}`;
 if(produccion === 'false') {
     mongoConnectionString = 'mongodb://127.0.0.1:27017'
 }
-   
+console.log(mongoConnectionString)
 mongoose.connect(mongoConnectionString, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
 
