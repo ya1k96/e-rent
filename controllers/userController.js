@@ -10,11 +10,7 @@ require('dotenv').config();
 const secret = process.env.SECRET;
 
   module.exports = (app) => {  
-    app.route('/api/login')
-    .get( async (req, res) => {  
-      if(req.session.logged)  return res.redirect('./');
-      return res.render('auth/login');
-    })
+    app.route('/api/login')    
     .post( 
       check('password')
       .notEmpty()
@@ -62,7 +58,7 @@ const secret = process.env.SECRET;
       }
 
     });
-    app.route('/register')
+    app.route('/api/register')
     .get( (req, res) => {    
       return res.render('auth/register');
     })
@@ -102,13 +98,11 @@ const secret = process.env.SECRET;
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.json({ ok: false, errors: errors.array() });
+      return res.json({ ok: false, msg: errors.errors[0].msg });
     }
 
-    let contract;
-    try {
-      contract = await contractModel.findById(idContract);        
-    } catch(err) {
+    const contract = await contractModel.findById(idContract);        
+    if(!contract) {
       return res.json({ok: false, msg: 'Ha ocurrido un error. Intenta nuevamente mas tarde.', code: 2})
     }
 
@@ -116,7 +110,7 @@ const secret = process.env.SECRET;
 
     if(newUser) {
       contract.user = newUser;
-      newUser.contract_id = idContract;
+      newUser.contract_id = contract._id;
       newUser.name = contract.name;
       await contract.save();
       await newUser.save();

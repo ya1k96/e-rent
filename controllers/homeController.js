@@ -25,16 +25,8 @@ module.exports = (app) => {
       });
     });
 
-    app.route('/api/renters/detail/:id')
-    // .get( async (req, res) => {
-    //   const userData = {
-    //     name: req.session.name,
-    //     role: req.session.role
-    //   };
-
-    //   return res.render('inquilinos/detail', {userData});
-    // })
-    .post(async (req, res) => {
+    app.route('/api/renters/detail/:id')    
+    .get(async (req, res) => {
       const id = req.params.id;
       if(!id) {
         return res.redirect('/');
@@ -44,7 +36,7 @@ module.exports = (app) => {
       .populate('invoices');
       
       if(!contract) {
-        return res.redirect('/');
+        return res.json({ok: false});
       }
 
       return res.json({ok: true, contract})
@@ -59,7 +51,7 @@ module.exports = (app) => {
     .withMessage('El apellido es requerido'), 
     check('price')
     .notEmpty()
-    .withMessage('El monto en requerido'), 
+    .withMessage('El monto es requerido'), 
     check('begin')
     .notEmpty()
     .withMessage('Establece la fecha de inicio del contrato'), 
@@ -88,7 +80,7 @@ module.exports = (app) => {
         increment_month: parseInt(body.increment_month)
       };
       console.log(contract)
-      contractModel.create(contract, async (err,doc) => {
+      contractModel.create(contract, async (err, doc) => {
         if(err) {
           return res.json({
             ok: false,
@@ -111,16 +103,25 @@ module.exports = (app) => {
 
     app.route('/api/invoices')
     .get( async (req, res) => {
-      let date = moment();
-
+      let date = moment().format('YYYY-MM-DD');
+      let find = {};
       const from = req.query.from ? req.query.from: date;
-      const until = req.query.until ? req.query.until: date;
-      
-      const invoices = await invoiceModel.find({})
-      .where('createdAt').gt(from).lt(until)
-      .populate('contract_id')
+      const until = req.query.until ? req.query.until: date;    
+      if(req.query.payed === 'true') find.payed = true;
+      const regexp = new RegExp(req.query.renter, 'i');        
+      let invoices = []; 
 
-      return res.json({ok: true, invoices});
+      let resp = invoiceModel.find(find)      
+      .populate({path: "contract_id", match: {name: regexp}})            
+      .where('createdAt').gt(from).lt(until)
+
+      await resp.exec((err, result) => {
+        if(err) return res.status(204).json({ok: false, invoices: []})
+        console.log(result)
+        invoices = result.filter( invoice => invoice.contract_id !== null)
+        return res.json({ok: true, invoices});
+      })
+    
     });
 
     // app.get('/invoice/detail/:id', async (req, res) => {
@@ -144,4 +145,16 @@ module.exports = (app) => {
         ok: true, invoice
       });
     });    
+
+    app.route('/api/pruebas')
+    .get(async (req, res) => {         
+      const regexp = new RegExp('lucas', 'i');
+      
+      let invoices = await invoiceModel.find()      
+      .populate({path: "contract_id", match: {name: regexp}})
+      .where('contract_id').ne(null)
+
+      return res.json({ok: true, invoices});
+
+    });
 }
