@@ -18,7 +18,7 @@ function getBucket(){
         if(this.admin) {
           setStorage();
         }
-        ;
+        
         resolve(storage.bucket('gs://e-rent-16ae4.appspot.com'));
     })
   

@@ -1,102 +1,87 @@
 const invoiceModel = require('../models/invoice');
 const contractModel = require('../models/contract');
-const { isUser, isAdmin } = require('../middlewares/auth');
+const { isUser } = require('../middlewares/auth');
+const { check, validationResult } = require('express-validator');
+const moment = require('moment');
 
 module.exports = (app) => {    
 
-    app.get('/', isAdmin, async (req, res) => {
-      let day = (new Date()).getDate();
-      let month = (new Date()).getMonth() + 1;
-      let contracts = await contractModel.find({}).populate({
-        path: 'invoices'       
-      })
+    app.get('/api/dashboard',  async (req, res) => {
+     const renters = await invoiceModel.find({payed: false})
+     .populate('contract_id');
 
-    let renters = [];
-    contracts.forEach((contract) => {
-      let invoices = contract.invoices.filter(invoice => invoice.payed != true);
-      let renter = {
-        invoices,
-        name: contract.name + ' ' + contract.surname,
-        id: contract._id,
-        pay_day: contract.pay_day        
-      };
-      if(invoices.length > 0) {
-        renters.push(renter);
-      }
-    });
-
-      let data = {
-        month,
+      return res.json({
+        ok: true,
         renters
-      };
-      const userData = {
-        name: req.session.name,
-        role: req.session.role
-      };
-
-      return res.render('home/index', {data, userData});
+      })
     });
 
-    app.get('/inquilinos', isAdmin, async(req, res) => {
-      const userData = {
-        name: req.session.name,
-        role: req.session.role
-      };
-      let data = {};
-      if(req.query.status) {
-        data.status = {
-          class: req.query.status,
-          msg: 'Perfecto! Hay un nuevo inquilino'
-        }
-      }
+    app.get('/api/renters',  async(req, res) => {
+      let renters = await contractModel.find({});    
 
-      data.inquilinos = await contractModel.find({});    
-
-      return res.render('inquilinos/index', {data: data, userData});
+      return res.json({        
+        renters
+      });
     });
 
-    app.route('/inquilinos/detail/:id')
-    .get( async (req, res) => {
-      const userData = {
-        name: req.session.name,
-        role: req.session.role
-      };
-
-      return res.render('inquilinos/detail', {userData});
-    })
-    .post(async (req, res) => {
+    app.route('/api/renters/detail/:id')    
+    .get(async (req, res) => {
       const id = req.params.id;
       if(!id) {
-        return res.redirect('/');
+        return res.status(400).json({msg: 'Debes ingresar un id'});
       }
-
+      
       let contract = await contractModel.findById(id)
       .populate('invoices');
       
       if(!contract) {
-        return res.redirect('/');
+        return res.status(400).json({msg: 'Inquilino no encontrado'});
       }
 
-      return res.json({ok: true, contract})
+      return res.json(contract);
     })
 
-    app.post('/inquilinos/add', isAdmin, (req,res) => {
-      const body = req.query;
+    app.post('/api/renters/add', 
+    check('name')
+    .notEmpty()
+    .withMessage('El nombre es requerido'),         
+    check('lastname')
+    .notEmpty()
+    .withMessage('El apellido es requerido'), 
+    check('price')
+    .notEmpty()
+    .withMessage('El monto es requerido'), 
+    check('begin')
+    .notEmpty()
+    .withMessage('Establece la fecha de inicio del contrato'), 
+    check('increment_month')
+    .notEmpty()
+    .withMessage('Establece el periodo de incremento'), 
+    check('increment_porc')
+    .notEmpty()
+    .withMessage('Establece el porcentaje de incremento'), 
+    (req,res) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+
+      const body = req.body;
+      let end = body.begin.split('-');
+      end[0] = parseInt(end[0]) + parseInt((body.months/12));
       let contract = {
         name: body.name,
-        surname: body.surname,
+        surname: body.lastname,
         price: parseInt(body.price),
         begin: new Date(body.begin),
-        end: new Date(body.end),
-        increment_porc: parseInt(body.increment_porc),
+        end: new Date(end.join('/')),
+        increment_porc: parseInt(body.increment_porc) || 6,
         increment_month: parseInt(body.increment_month)
       };
 
-      contractModel.create(contract, async (err,doc) => {
+      contractModel.create(contract, async (err, doc) => {
         if(err) {
-          console.log(err)
-          return res.json({
-            ok: false,
+          return res.status(400).json({            
             msg: 'Ha ocurrido un error. Intenta mas tarde.'
           });
         }
@@ -104,46 +89,44 @@ module.exports = (app) => {
         //Creamos la primera factura del contrato
         await doc.firstInvoice();
 
-        return res.json({
-          ok: true,
+        return res.json({          
           msg: 'Perfecto! Hay un nuevo inquilino.',
-          doc
+          id: contract._id
         });
       });   
      
 
     });
 
-    app.route('/invoice')
-    .get(isAdmin, async (req, res) => {
-      const userData = {
-        name: req.session.name,
-        role: req.session.role
-      };
-      return res.render('facturas/index', {userData});
-    })
-    .post(isAdmin, async (req, res) => {
-      const from = req.body.from;
-      const until = req.body.until;
-      
-      const invoices = await invoiceModel.find({})
-      .where('createdAt').gt(from).lt(until)
-      .populate('contract_id')
+    app.route('/api/invoices')
+    .get( async (req, res) => {
+      let date = moment().format('YYYY-MM-DD');
+      let find = {};
+      const from = req.query.from ? req.query.from: date;
+      const until = req.query.until ? req.query.until: date;    
+      if(req.query.payed === 'true') find.payed = true;
+      const regexp = new RegExp(req.query.renter, 'i');        
+      let invoices = []; 
 
-      return res.json({ok: true, invoices});
+      let resp = invoiceModel.find(find)      
+      .populate({path: "contract_id", match: {name: regexp}})            
+      .where('createdAt').gt(from).lt(until)
+
+      await resp.exec((err, result) => {
+        if(err) return res.json({ invoices: []});
+
+        invoices = result.filter( invoice => invoice.contract_id !== null)
+        return res.json(invoices);
+      })
+    
     });
 
-    app.get('/invoice/detail/:id', async (req, res) => {
-      const userData = {
-        name: req.session.name,
-        role: req.session.role
-      };
+    app.get('/api/invoices/detail/:id', async (req, res) => {
       const id = req.params.id;
       const invoice = await invoiceModel.findById(id)
       .populate(['contract_id','payment']);
       
-      return res.render('facturas/detail', {invoice, userData});
-    });
+      return res.json(invoice);
+    });    
 
-    
 }

@@ -1,5 +1,6 @@
 const fs = require("fs");
 const PDFDocument = require("pdfkit");
+const path = require("path");
 
 let invoice = (invoice, path) => {
   return new Promise((resolve) => {
@@ -20,14 +21,17 @@ let invoice = (invoice, path) => {
 }
 
 let header = (doc, invoice) => {
+  const pathLogo = path.resolve(__dirname, invoice.header.company_logo);
 
-    if (fs.existsSync(invoice.header.company_logo)) {
-      doc.image(invoice.header.company_logo, 50, 45, { width: 50 })
+   if (fs.existsSync(pathLogo)) {
+      doc.image(pathLogo, 250, 45, { width: 50 },  )
       .fontSize(20)
-      .text(invoice.header.company_name, 110, 57)
+      .fillColor("#444444")
+      .text(invoice.header.company_name, 110, 57, {align: 'center'})
       .moveDown();
     }else{
       doc.fontSize(20)
+      .fillColor("#444444")
       .text(invoice.header.company_name, 50, 45)
       .moveDown()
     }
@@ -41,8 +45,8 @@ let header = (doc, invoice) => {
 let customerInformation = (doc, invoice)=>{
   doc
     .fillColor("#444444")
-    .fontSize(20)
-    .text("RECIBO", 50, 130, { align: "center" });
+    .fontSize(10)
+    .text("documento no valido como factura", 50, 130, { align: "center" });
 
   generateHr(doc, 185);
 
@@ -132,9 +136,22 @@ let invoiceTable = (doc, invoice) => {
 }
 
 let footer = (doc, invoice) => {
-  if(invoice.footer.text.length!==0){
-    doc.fontSize(10).text(invoice.footer.text,50,780,{ align: "center", width: 500 });
-  } 
+    const pathSignField = path.resolve(__dirname, invoice.footer.pathSign);
+  
+    if (fs.existsSync(pathSignField)) {
+      doc.image(pathSignField, 50, 450, { width: 100 })
+      .fontSize(11)
+      .fillColor("#444444")
+      .font("Helvetica-Bold")
+      .text(invoice.footer.owner, 50, 515, {align: 'left'})
+      .moveDown();
+    }else{
+      doc.fontSize(20)
+      .fillColor("#444444")
+      .font("Helvetica-Bold")
+      .text(invoice.header.company_name, 50, 780)
+      .moveDown()
+    }
 }
 
 let totalTable = (
@@ -171,7 +188,7 @@ let tableRow = (
 
 let generateHr = (doc, y) => {
     doc
-    .strokeColor("#aaaaaa")
+    .strokeColor("#edeff1")
     .lineWidth(1)
     .moveTo(50, y)
     .lineTo(550, y)
@@ -222,7 +239,7 @@ let companyAddress = (doc, address) => {
   let chunks = str.match(/.{0,25}(\s|$)/g);
   let first = 50;
   chunks.forEach(function (i,x) {
-    doc.fontSize(10).text(chunks[x], 50, first, { align: "center" });
+    doc.fontSize(10).text(chunks[x], 50, first, { align: "right" });
     first = +first +  15;
   });
 }

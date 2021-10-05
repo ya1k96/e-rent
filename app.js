@@ -3,7 +3,8 @@ const app = new express();
 const mongoose= require('mongoose');
 const webpush = require('web-push');
 const Agenda = require('agenda');
-const session = require('express-session');
+const path = require('path');
+var cors = require('cors')
 
 require('dotenv').config();
 
@@ -35,10 +36,10 @@ agenda.define("create invoice", async (job) => {
 });
 
 (async function () {
-  // IIFE to give access to async/await
-  await agenda.start();
-
-  await agenda.every("1 months", "create invoice");
+    // IIFE to give access to async/await
+    await agenda.start();
+    
+    await agenda.every("1 months", "create invoice");
 })();
 
 const vapidKeys = {
@@ -50,72 +51,33 @@ webpush.setVapidDetails(
     'mailto:example@yourdomain.org', // 1
     vapidKeys.publicKey, // 2
     vapidKeys.privateKey // 3
-);
-
-db.once("open", function(){
-    console.log("Conectado a la bd")
-});
-
-db.on("error", function(er){
-    console.log("No se pudo conectar a la base de datos")
-    console.log(er);   
-})
-
-app.use(session({
-    secret: process.env.SECRET,
-    resave: true,
-    saveUninitialized: true,
-    user: null,
-    token: null,
-    role: null,
-    logged: false
-}))
-
-app.use((req, res, next) => {
-	res.header('Access-Control-Allow-Origin', '*');
-	res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
-	res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
-	res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
-	next();
-});
-const clientList = [];
-app.post('/subscribe', (req,res) => {
-    const body = req.body;
-    try {
-        clientList.push(body);
-      } catch (e) {
-        console.log(e);
-      }
-    return res.json({ok: true})
-})
-app.get('/send', (req,res) => {
-    console.log(clientList);
-    try {
-        clientList.forEach(subItem => {
-            webpush.sendNotification(subItem, JSON.stringify({ title:"No hay pan", body: "pepe" }));
-        });
-    } catch (e) {
-    console.log(e);
-    }
-
-    return res.json({ok: true})
-})
-  
-const userController = require('./controllers/userController');
-const homeController = require('./controllers/homeController');
+    );
+    
+    db.once("open", function(){
+        console.log("Conectado a la bd")
+    });
+    
+    db.on("error", function(er){
+        console.log("No se pudo conectar a la base de datos")
+        console.log(er);   
+    })
+    
+    app.use(cors())
+    app.use(express.json());
+    app.use(express.static('./public'));
+    
+    const pathFile = path.join(__dirname, 'dist' );
+    app.use(express.static(pathFile));
+    
+    const userController = require('./controllers/userController');
+    const homeController = require('./controllers/homeController');
 const paymentsController = require('./controllers/payments');
-
-app.use(express.json());
-app.use(express.static('./public'));
-app.use(express.static('./views'));
-app.set('view engine', 'ejs');
 
 //Rutas
 userController(app);
 homeController(app);
 paymentsController(app);
 
-app.listen((process.env.PORT||3000),() => {
-
+app.listen((process.env.PORT||8080),() => {
     console.log('SERVER RUN')
 })
