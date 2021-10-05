@@ -46,11 +46,10 @@ const secret = process.env.SECRET;
           }
           let token = jwt.sign(publicUser, secret, { expiresIn: '2 days'});
 
-          return res.json({ok: true, token, publicUser})
+          return res.json({ token, publicUser})
         } else {
-          return res.json({
-              ok: false, 
-              error: {msg: 'Contraseña o Correo incorrectos.', code:2}
+          return res.status(400).json({              
+              msg: 'Contraseña o Correo incorrectos.'
             }
           )
         }
