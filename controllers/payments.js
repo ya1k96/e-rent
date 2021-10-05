@@ -9,7 +9,8 @@ moment.locale('es');
 
 require('dotenv').config();
 module.exports = (app) => {
-  
+      var genericalError = 'Ha ocurrido un error. Prueba intentando mas tarde';
+      
       app.post('/api/payments/create/:id', async (req, res) => {
         //id de la factura, para generar el recibo.
         const id = req.params.id;
@@ -21,11 +22,11 @@ module.exports = (app) => {
         let interest = 0;
 
         if(invoice.payed) {
-          return res.json({ok: false, msg: "La factura ya esta pagada."});
+          return res.status(400).json({msg: "La factura ya esta pagada."});
         }
 
         if( expiredTimes <= 0 ) {
-            interest = -(expiredTimes) * (invoice.total * 0.01);
+            interest = (-expiredTimes) * (invoice.total * 0.01);
         }
 
         let payment = paymentsModel({
@@ -42,13 +43,12 @@ module.exports = (app) => {
             invoice.payment = newPayment._id;
             await invoice.save();
 
-            return res.json({
-                ok: true, 
+            return res.status(201).json({                
                 msg: "¡Recibo creado correctamente!.", 
                 id_payment: newPayment._id
             })
         } else {
-            return res.json({ok: false, msg:'Ha ocurrido un error. Intentalo mas tarde.'})
+            return res.status(400).json({msg: genericalError})
         }
 
       });
@@ -62,7 +62,7 @@ module.exports = (app) => {
         let documentPath = '';
 
         if(!invoice || !invoice.payment || invoice.payment._id != id_payment) {
-            return res.json({ok: false, mg: 'Ha ocurrido un error'});
+            return res.status(400).json({msg: genericalError});
         }
         
         personInfo = {
@@ -92,7 +92,7 @@ module.exports = (app) => {
 
             const result = await doc.getSignedUrl({ action: "read" , expires : dateExp});
             if(result.length == 0) {
-                return res.json({ok: false, mg: 'Ha ocurrido un error'});
+                return res.status(400).json({msg: genericalError});
             }
 
             return res.redirect(result[0]);
@@ -145,7 +145,7 @@ module.exports = (app) => {
                             return res.redirect(result[0]);
                         });
                     } else {
-                        return res.json({ok: false, msg: 'Ha ocurrido un error'})
+                        return res.status(400).json({msg: genericalError})
                     }
                 }, 2000);            
 

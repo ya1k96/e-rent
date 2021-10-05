@@ -19,8 +19,7 @@ module.exports = (app) => {
     app.get('/api/renters',  async(req, res) => {
       let renters = await contractModel.find({});    
 
-      return res.json({
-        ok: true, 
+      return res.json({        
         renters
       });
     });
@@ -29,17 +28,17 @@ module.exports = (app) => {
     .get(async (req, res) => {
       const id = req.params.id;
       if(!id) {
-        return res.redirect('/');
+        return res.status(400).json({msg: 'Debes ingresar un id'});
       }
-
+      
       let contract = await contractModel.findById(id)
       .populate('invoices');
       
       if(!contract) {
-        return res.json({ok: false});
+        return res.status(400).json({msg: 'Inquilino no encontrado'});
       }
 
-      return res.json({ok: true, contract})
+      return res.json(contract);
     })
 
     app.post('/api/renters/add', 
@@ -64,7 +63,7 @@ module.exports = (app) => {
     (req,res) => {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res.json({ ok: false, errors: errors.array() });
+        return res.status(400).json({ errors: errors.array() });
       }
 
       const body = req.body;
@@ -79,11 +78,10 @@ module.exports = (app) => {
         increment_porc: parseInt(body.increment_porc) || 6,
         increment_month: parseInt(body.increment_month)
       };
-      console.log(contract)
+
       contractModel.create(contract, async (err, doc) => {
         if(err) {
-          return res.json({
-            ok: false,
+          return res.status(400).json({            
             msg: 'Ha ocurrido un error. Intenta mas tarde.'
           });
         }
@@ -91,10 +89,9 @@ module.exports = (app) => {
         //Creamos la primera factura del contrato
         await doc.firstInvoice();
 
-        return res.json({
-          ok: true,
+        return res.json({          
           msg: 'Perfecto! Hay un nuevo inquilino.',
-          contract
+          id: contract._id
         });
       });   
      
@@ -116,45 +113,20 @@ module.exports = (app) => {
       .where('createdAt').gt(from).lt(until)
 
       await resp.exec((err, result) => {
-        if(err) return res.status(204).json({ok: false, invoices: []})
-        console.log(result)
+        if(err) return res.json({ invoices: []});
+
         invoices = result.filter( invoice => invoice.contract_id !== null)
-        return res.json({ok: true, invoices});
+        return res.json(invoices);
       })
     
     });
-
-    // app.get('/invoice/detail/:id', async (req, res) => {
-    //   const userData = {
-    //     name: req.session.name,
-    //     role: req.session.role
-    //   };
-    //   const id = req.params.id;
-    //   const invoice = await invoiceModel.findById(id)
-    //   .populate(['contract_id','payment']);
-      
-    //   return res.render('facturas/detail', {invoice, userData});
-    // });
 
     app.get('/api/invoices/detail/:id', async (req, res) => {
       const id = req.params.id;
       const invoice = await invoiceModel.findById(id)
       .populate(['contract_id','payment']);
       
-      return res.json({
-        ok: true, invoice
-      });
+      return res.json(invoice);
     });    
 
-    app.route('/api/pruebas')
-    .get(async (req, res) => {         
-      const regexp = new RegExp('lucas', 'i');
-      
-      let invoices = await invoiceModel.find()      
-      .populate({path: "contract_id", match: {name: regexp}})
-      .where('contract_id').ne(null)
-
-      return res.json({ok: true, invoices});
-
-    });
 }

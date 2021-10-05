@@ -1,29 +1,12 @@
-const nodemailer = require("nodemailer");
-require('dotenv').config();
+const { transporter } = require("./transporter");
 
-// async..await is not allowed in global scope, must use a wrapper
-module.exports = async (toEmail, url) => {
-  // Generate test SMTP service account from ethereal.email
-  // Only needed if you don't have a real mail account for testing
-    let user = process.env.MAIL;
-    let password = process.env.PASSWORDMAIL;
-  // create reusable transporter object using the default SMTP transport
-  let transporter = nodemailer.createTransport({
-    host: "smtp.office365.com",
-    port: 587,
-    secure: false, // true for 465, false for other ports
-    auth: {
-      user: user, // generated ethereal user
-      pass: password, // generated ethereal password
-    },
-  });
-
+module.exports = async (subject, text, emailTo, body) => {
   // send mail with defined transport object
-  let info = await transporter.sendMail({
+  return await transporter.sendMail({
     from: '"E-rent admin" <yamil123_1@live.com>', // sender address
-    to: toEmail, // list of receivers
-    subject: "Confirma tu correo electronico E-rent", // Subject line
-    text: "Hola! Ya estas a nada de usar tu cuenta", // plain text body
+    to: emailTo, // list of receivers
+    subject, // Subject line
+    text, // plain text body
     html: `
     <style>
       .center {
@@ -62,12 +45,10 @@ module.exports = async (toEmail, url) => {
         background-color: #3498db;
       }
     </style>
-    <div class="center shadow-lg card">
-      <p>Hola! Por favor confirma tu correo haciendo click en el siguiente link</p>
-      <a href="${url}" >Confirmar mi correo</a>
+    <div class="center shadow-lg card">      
+      ${body}
     </div>
     `, // html body
   });
 
 }
-
