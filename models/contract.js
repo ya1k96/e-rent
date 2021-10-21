@@ -42,6 +42,10 @@ const contractSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'users'
     },
+    aldia: {
+        type: Boolean, 
+        default: true
+    },
     invoices: [
         {
             type: Schema.Types.ObjectId,

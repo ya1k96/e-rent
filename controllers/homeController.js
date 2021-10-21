@@ -10,18 +10,21 @@ module.exports = (app) => {
      const renters = await invoiceModel.find({payed: false})
      .populate('contract_id');
 
-      return res.json({
-        ok: true,
-        renters
-      })
+      return res.json(renters)
     });
 
     app.get('/api/renters',  async(req, res) => {
-      let renters = await contractModel.find({});    
+      const renters = await contractModel.find({})
+      .populate('invoices');  
 
-      return res.json({        
-        renters
+      renters.forEach((renter) => {
+        renter.aldia = true;      
+        renter.invoices.forEach((invoice) => {
+          if(!invoice.payed) renter.aldia = false;        
+        });        
       });
+
+      return res.json(renters);
     });
 
     app.route('/api/renters/detail/:id')    
