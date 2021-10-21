@@ -3,9 +3,8 @@ let { Schema } = mongoose;
 const uuid = require('uuid').v4;
 const userSchema = new Schema({
     user_role: {
-        type: Schema.Types.ObjectId,
-        ref: 'roles',
-        default: '60c17fa095f9fcf6d36b224b'
+        type: String,        
+        default: 'Admin'
     },
     contract_id: {
         type: Schema.Types.ObjectId,

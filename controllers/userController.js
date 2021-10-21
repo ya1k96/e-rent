@@ -19,15 +19,18 @@ const secret = process.env.SECRET;
       .withMessage('Correo invalido'),
       check('email')
       .notEmpty()
-      .withMessage('Ingresa tu correo'), async (req, res) => {
+      .withMessage('Ingresa tu correo'),
+      check('email').custom(async value => {
+        let user = await usersModel.findOne({email: value}) ;
+        if (!user) {
+          return Promise.reject('Usuario no registrado');
+        }
+      }), async (req, res) => {
 
       const email = req.body.email;
       const password = req.body.password;
       let user = await usersModel.findOne({email}).populate('user_role');
-
-      if(!user) {
-        return res.status(400).json({msg: 'Este usuario no esta registado'})
-      }
+    
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
@@ -42,7 +45,7 @@ const secret = process.env.SECRET;
           const publicUser = {
             email: user.email,
             name: user.name,
-            role: user.user_role.type        
+            role: "admin"// Modificar luego      
           }
           let token = jwt.sign(publicUser, secret, { expiresIn: '2 days'});
 
@@ -53,6 +56,11 @@ const secret = process.env.SECRET;
             }
           )
         }
+      }else {
+        return res.status(400).json({              
+            msg: 'Este correo no esta asociado a ninguna cuenta.'
+          }
+        )
       }
 
     });
@@ -77,15 +85,16 @@ const secret = process.env.SECRET;
       check('email')
       .notEmpty()
       .withMessage('Ingresa un correo'),
-      check('userId').custom(async value => {
-        let contract = contractModel.findById(value);
-        if (!contract) {
-          return Promise.reject('El codigo de usuario no existe. Contacta con tu administrador.');
-        }
-      }),
-      check('userId')
-      .notEmpty()
-      .withMessage('Ingresa tu Nro de usuario'), async (req, res) => {
+      // check('userId').custom(async value => {
+      //   let contract = contractModel.findById(value);
+      //   if (!contract) {
+      //     return Promise.reject('El codigo de usuario no existe. Contacta con tu administrador.');
+      //   }
+      // }),
+      // check('userId')
+      // .notEmpty()
+      // .withMessage('Ingresa tu Nro de usuario'), 
+      async (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
     const idContract = req.body.userId;
@@ -110,8 +119,8 @@ const secret = process.env.SECRET;
       newUser.name = contract.name;
                 
       Promise.all([newUser.save(), contract.save()])
-      .then( async () => await sendEmail("Confirma tu correo", "Confirma tu correo", email, bodyEmail) )
-      .catch(() => res.json({ok: true, msg: 'Usuario creado con exito.'}));      
+      .then( async () => await sendEmail("Confirma tu correo", "Confirma tu correo", email, bodyEmail))
+      .catch((err) => res.status(400).json({msg: 'Ha ocurrido un error.', err}));      
 
       let urlConfirmation = `${req.protocol}://${req.get('host')}/userVerification?token=${newUser.token_confirmation}&email=${email}`;
       
