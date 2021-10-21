@@ -24,7 +24,7 @@ let header = (doc, invoice) => {
   const pathLogo = path.resolve(__dirname, invoice.header.company_logo);
 
    if (fs.existsSync(pathLogo)) {
-      doc.image(pathLogo, 250, 45, { width: 50 },  )
+      doc.image(pathLogo, 250, 45, { width: 150 },  )
       .fontSize(20)
       .fillColor("#444444")
       .text(invoice.header.company_name, 110, 57, {align: 'center'})
