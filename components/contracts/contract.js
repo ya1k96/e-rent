@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 let { Schema } = mongoose;
-const invoiceModel = require('./invoice');
+const invoiceModel = require('../invoices/invoice');
 
 const contractSchema = new Schema({
     name: {
