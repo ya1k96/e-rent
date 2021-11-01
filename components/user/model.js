@@ -9,7 +9,7 @@ const userSchema = new Schema({
     contract_id: {
         type: Schema.Types.ObjectId,
         ref: 'contracts',
-        unique: true
+        default: null      
     },
     email: {
         type: String,

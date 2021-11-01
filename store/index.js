@@ -9,9 +9,9 @@ const PRODUCTION = config.PRODUCTION;
 let MONGOOSE_CONNECTION_STRING = `mongodb+srv://${DBUSER}:${DBPASSWORD}@${DBURL}`;
 
 if(PRODUCTION === 'false') {
-    MONGOOSE_CONNECTION_STRING = 'mongodb://127.0.0.1:27017'
+    MONGOOSE_CONNECTION_STRING = 'mongodb://127.0.0.1:27017/e-rent'
 }
-
+console.log(MONGOOSE_CONNECTION_STRING)
 module.exports = {
     connect: () => {
         mongoose.connect(MONGOOSE_CONNECTION_STRING, { useNewUrlParser: true, useUnifiedTopology: true });

@@ -4,13 +4,13 @@ const { check } = require('express-validator');
 module.exports = {
     login: [
         check('password')        
-        .notEmpty().bail()
-        .withMessage('Ingresa una contraseña')     
-        .isEmail().bail()
-        .withMessage('Correo invalido'),
+        .notEmpty()
+        .withMessage('Ingresa una contraseña'),
         check('email')
         .notEmpty().bail()
         .withMessage('Ingresa tu correo')
+        .isEmail().bail()
+        .withMessage('Correo invalido')
         .custom(async value => {
             let user = await usersModel.findOne({email: value}) ;
             if (!user) {
@@ -30,7 +30,8 @@ module.exports = {
       .isEmail().bail()
       .withMessage('Ingresa un correo valido')
       .custom(async value => {
-        let user = await usersModel.findOne({email: value}) ;
+        let user = await usersModel.findOne({email: value});
+        console.log(user)
         if (user) {
           return Promise.reject('Este correo esta en uso');
         }
