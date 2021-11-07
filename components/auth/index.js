@@ -1,5 +1,5 @@
 const md5 = require('md5');
-const usersModel = require('../user/model');
+const usersModel = require('./model');
 const jwt = require('jsonwebtoken');
 const { BAD_REQUEST_ERROR, BAD_GATEWAY } = require('../../utils/constants');
 const {SECRET} = require('../../config/development');
@@ -8,7 +8,7 @@ const { CONFIRMATION_REQUERID, BAD_CREDENTIALS, DEFAULT_MESSAGE } = require('../
 const responses = require('../../network/response');
 
   module.exports = {  
-    login: (req, res) => {
+    login: async (req, res) => {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return responses.success(req, res, getErrors(errors), BAD_REQUEST_ERROR);
