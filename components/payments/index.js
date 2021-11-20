@@ -1,11 +1,10 @@
 const {moment} = require('../../utils/momentEs');
-const err = require('../../utils/error');
 const { BAD_REQUEST_ERROR, BAD_GATEWAY } = require('../../utils/constants');
-const { DEFAULT_MESSAGE } = require('../../utils/messagesConstants');
+const { DEFAULT_MESSAGE, INVOICES_PAYED_ALRIGHT } = require('../../utils/messagesConstants');
 const {generateInvoice}= require('../../functions/invoicePDF/index');
 
 module.exports = {
-    payInvoice: async (req) => new Promise((resolve, reject) => {
+    payInvoice: async (req, res) => {
         //id de la factura, para generar el recibo.
         const id = req.params.id;
   
@@ -16,7 +15,7 @@ module.exports = {
         let interest = 0;
 
         if(invoice.payed) {
-          return reject(err({msg: "La factura ya esta pagada."}, BAD_REQUEST_ERROR))
+            return responses.error(req, res, INVOICES_PAYED_ALRIGHT, BAD_REQUEST_ERROR)
         }
 
         if( expiredTimes <= 0 ) {
@@ -29,19 +28,18 @@ module.exports = {
             total: interest + invoice.total,
             interest 
         })
-        .then(payment => {
+        .then(async payment => {
             invoice.payed = true;
             invoice.payment = payment._id;
-            invoice.save()            
-            .catch(error => reject(err({error: DEFAULT_MESSAGE}, BAD_REQUEST_ERROR)))    
+            await invoice.save();                      
 
-            resolve(payment);
+            return responses.success(req, res, payment, RESPONSE_OK);
         })
-        .catch(error => reject(err(error)))    
+        .catch(error => responses.error(req, res, DEFAULT_MESSAGE, BAD_REQUEST_ERROR))    
 
-      }),
+      },
 
-      generateInvoicePayed: (req) => new Promise((resolve, reject) => {
+      generateInvoicePayed: (req, res) => {
         const id_invoice = req.params.id_payment;
         const id_payment = req.params.id_invoice;
         const invoice = await invoiceModel.findById(id_invoice)
@@ -49,11 +47,13 @@ module.exports = {
         .populate('payment');
 
         if(!invoice || !invoice.payment || invoice.payment._id != id_payment) {
-            return res.status(400).json({msg: genericalError});
-        }
+            return responses.error(req, res, DEFAULT_MESSAGE, BAD_REQUEST_ERROR);
+        }        
         
         generateInvoice(invoices, id_payment)
-        .then(data => resolve(data))
-        .catch(err({error: DEFAULT_MESSAGE}, BAD_REQUEST_ERROR));
-    })
+        .then(data => responses.success(req, res, data, RESPONSE_OK))
+        .catch(err => {
+            return responses.error(req, res, DEFAULT_MESSAGE, BAD_REQUEST_ERROR);            
+        });
+    }
 }
