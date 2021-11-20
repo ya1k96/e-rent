@@ -76,7 +76,7 @@ contractSchema.methods.firstInvoice = async function() {
         expiration
     };
     
-    const newInvoice = await invoiceModel(invoice).save(); 
+    const newInvoice = await invoiceModel.create(invoice); 
     this.invoices.push(newInvoice);
 
     await doc.save();
@@ -113,4 +113,25 @@ contractSchema.methods.nextInvoice = async function() {
     await this.save();
 }
 
+contractSchema.methods.newContract = (data) => new Promise((resolve,reject) =>
+{
+    let end = data.begin.split('-');
+    end[0] = parseInt(end[0]) + parseInt((data.months/12));
+    let newContract = {
+        name: data.name,
+        surname: data.lastname,
+        price: parseInt(data.price),
+        begin: new Date(data.begin),
+        end: new Date(end.join('/')),
+        increment_porc: parseInt(data.increment_porc) || 6,
+        increment_month: parseInt(data.increment_month)
+    };
+
+    this.create(newContract, async (err, doc) => {
+        if(err) return reject(err);      
+        //Creamos la primera factura del contrato
+        await doc.firstInvoice();
+        resolve(doc);
+    }); 
+})
 module.exports = mongoose.model('contracts', contractSchema);

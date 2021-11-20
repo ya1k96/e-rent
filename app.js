@@ -3,27 +3,11 @@ const app = new express();
 const path = require('path');
 const cors = require('cors')
 const db = require('./store/index');
-const swaggerjsdoc = require('swagger-jsdoc');
-const swaggerUi = require('swagger-ui-express');
-const swaggerOptions = {
-    swaggerDefinition: {
-        info: {
-            title: 'eRent api',
-            description: 'Gestion de inquilinosa api',
-            contact: {
-                name: 'Yamil Martinez'
-            }
-        }
-    },
-    apis: [
-        'components/auth/index.js'
-    ]
-}
-
-const swaggerDocs = swaggerjsdoc(swaggerOptions);
+const {serve, setup} = require('./doc/index');
 
 const authRoute = require('./components/auth/route');
-const errors = require('./network/errors');
+const usersRoute = require('./components/users/route');
+const contractsRoute = require('./components/contracts/route');
 
 //db connection method
 db.connect();
@@ -36,9 +20,10 @@ const pathFile = path.join(__dirname, 'dist' );
 app.use(express.static(pathFile));
 
 // Routes
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-app.use('/api/auth', authRoute);
+app.use('/api-docs', serve, setup);
 
-app.use(errors);
+app.use('/api/auth', authRoute);
+app.use('/api/users', usersRoute);
+app.use('/api/contracts', contractsRoute);
 
 module.exports = app;

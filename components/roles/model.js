@@ -10,4 +10,9 @@ const rolesSchema = new Schema({
     
 });
 
+rolesSchema.methods.upsert = (body) => {
+    const option = { upsert: body.id ? true : false}
+    return this.findOneAndUpdate(body.id, body, option);
+}
+
 module.exports = mongoose.model('roles', rolesSchema);
