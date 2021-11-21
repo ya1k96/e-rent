@@ -16,7 +16,7 @@ const swaggerOptions = {
 
 const swaggerDocs = swaggerjsdoc(swaggerOptions);
 
-module.exports = {
-    serve: swaggerUi.serve, 
-    setup: swaggerUi.setup(swaggerDocs)
-};
+// module.exports = {
+//     serve: swaggerUi.serve, 
+//     setup: swaggerUi.setup(swaggerDocs)
+// };

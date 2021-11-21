@@ -1,9 +1,9 @@
-const getPDF = require('../invoice');
+const getPDF = require('./invoice');
 const {getBucket} = require('../storage');
 const path = require('path');
 const fs = require('fs');
 
-modules.exports = {
+module.exports = {
     generateInvoice: async (invoice, id_payment) => {
         let documentPath = '';
         //Idealmente deberia tener los datos en el contrato

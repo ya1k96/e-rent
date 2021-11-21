@@ -1,5 +1,5 @@
 const { check } = require('express-validator');
-const { BAD_REQUEST_ERROR } = require('../../utils/constants');
+const { BAD_REQUEST_ERROR } = require('../utils/constants');
 
 module.exports = {
     notEmptyId: async (req, res, next) => {

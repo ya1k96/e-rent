@@ -5,7 +5,7 @@ const contractModel = require('./model');
 const responses = require('../../network/response');
 
 module.exports = {
-    create: (req, res) => {
+    create: async (req, res) => {
         {        
           const body = req.body;              
           try {
@@ -25,7 +25,7 @@ module.exports = {
           return responses.error(req, res, {msg: DEFAULT_MESSAGE}, BAD_REQUEST_ERROR);          
         }
       },
-      remove: (req, res) => {
+      remove: async (req, res) => {
         const id = req.body.id;
         try {
           const contract  = await contractModel.findByIdAndRemove(id);
@@ -34,7 +34,7 @@ module.exports = {
           return responses.error(req, res, {msg: DEFAULT_MESSAGE}, BAD_REQUEST_ERROR);          
         }
       },
-      update: (req, res) => {
+      update: async (req, res) => {
         const body = req.body;  
         try {
           const doc = await contractModel.updateOne(body);

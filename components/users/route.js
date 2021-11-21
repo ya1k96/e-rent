@@ -16,7 +16,7 @@ router.get('/:id', notEmptyId, getById);
  * @swagger
  * 
 */
-router.update('/:id', notEmptyId, update);
+router.put('/:id', notEmptyId, update);
 /** 
  * @swagger
  * 

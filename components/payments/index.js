@@ -39,7 +39,7 @@ module.exports = {
 
       },
 
-      generateInvoicePayed: (req, res) => {
+      generateInvoicePayed: async (req, res) => {
         const id_invoice = req.params.id_payment;
         const id_payment = req.params.id_invoice;
         const invoice = await invoiceModel.findById(id_invoice)
