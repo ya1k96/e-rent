@@ -1,7 +1,7 @@
 const md5 = require('md5');
 const usersModel = require('./model');
 const jwt = require('jsonwebtoken');
-const { BAD_REQUEST_ERROR, BAD_GATEWAY } = require('../../utils/constants');
+const { BAD_REQUEST_ERROR, BAD_GATEWAY, RESPONSE_OK } = require('../../utils/constants');
 const {SECRET} = require('../../config/development');
 const { validationResult } = require('express-validator');
 const { CONFIRMATION_REQUERID, BAD_CREDENTIALS, DEFAULT_MESSAGE } = require('../../utils/messagesConstants');
@@ -32,7 +32,8 @@ const responses = require('../../network/response');
             role: "admin"     
           }
           const token = jwt.sign(publicUser, SECRET, { expiresIn: '2 days'});
-          responses.success(req,res, {token}, RESPONSE_OK);
+          req.token = token;
+          responses.success(req,res, {token, user: publicUser}, RESPONSE_OK);
         } else {
           return responses.error(req,res,{error: BAD_CREDENTIALS}, BAD_REQUEST_ERROR);
         }

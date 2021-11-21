@@ -10,9 +10,12 @@ const contractsRoute = require('./components/contracts/route');
 const paymentsRoute = require('./components/payments/route');
 const invoicesRoute = require('./components/invoices/route');
 const {validateJwt} = require('./middlewares/validate-jwt');
-
+const agenda = require('./functions/agenda');
 //db connection method
 db.connect();
+
+//agenda definition
+agenda(db.MONGOOSE_CONNECTION_STRING);
 
 app.use(cors());
 app.use(express.json());

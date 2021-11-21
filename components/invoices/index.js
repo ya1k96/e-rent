@@ -1,7 +1,8 @@
 const invoiceModel = require('./model');
 const {moment} = require('../../utils/momentEs');
-const { BAD_REQUEST_ERROR, BAD_GATEWAY } = require('../../utils/constants');
+const { BAD_REQUEST_ERROR, BAD_GATEWAY, RESPONSE_OK } = require('../../utils/constants');
 const { ID_NOT_FOUND, DEFAULT_MESSAGE } = require('../../utils/messagesConstants');
+const responses = require('../../network/response');
 
 module.exports = {
     create: async (req, res) => {
@@ -49,5 +50,12 @@ module.exports = {
         
         const docs = await invoiceModel.all(renter, from, until);                                
         return responses.success(req, res, docs, RESPONSE_OK);
+    },
+    nextExpire: (req, res) => {        
+        invoiceModel.find({payed: false})
+        .then(doc => responses.success(req, res, doc, RESPONSE_OK))
+        .catch(err => {
+            return responses.success(req, res, err, BAD_REQUEST_ERROR);
+        });                     
     }
 }

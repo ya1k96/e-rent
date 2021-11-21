@@ -6,11 +6,12 @@ const { EMPTY_TOKEN } = require('../utils/messagesConstants');
 
 module.exports = {
     validateJwt: async (req, res, next) => {
-        const token = req.token;
-
+        let token = req.header('Authorization');
         if(!token) {
             response.error(req, res, EMPTY_TOKEN, FORBIDDEN);            
         }
+        
+        token = token.split('Bearer ')[1];        
         
         const result = await jwt.verify(token, config.SECRET);
         

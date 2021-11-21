@@ -26,5 +26,6 @@ module.exports = {
             console.log("No se pudo conectar a la base de datos")
             console.log(er);   
         })
-    }
+    },
+    MONGOOSE_CONNECTION_STRING
 }
