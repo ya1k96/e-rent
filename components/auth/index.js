@@ -6,6 +6,7 @@ const {SECRET} = require('../../config/development');
 const { validationResult } = require('express-validator');
 const { CONFIRMATION_REQUERID, BAD_CREDENTIALS, DEFAULT_MESSAGE } = require('../../utils/messagesConstants');
 const responses = require('../../network/response');
+const {getErrors} = require('../../utils/getErrors');
 
   module.exports = {  
     login: async (req, res) => {

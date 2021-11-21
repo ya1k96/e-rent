@@ -1,5 +1,6 @@
-const { check } = require('express-validator');
+const { check, validationResult } = require('express-validator');
 const { BAD_REQUEST_ERROR } = require('../../utils/constants');
+const responses = require('../../network/response');
 
 module.exports = {
     validContract: async (req, res, next) => {
@@ -28,7 +29,7 @@ module.exports = {
         /** TODO: Tenemos que traer el mes minimo de un modelo */
         await check('months')
         .custom(async value => {
-          if (value >= 12) {
+          if (value < 12) {
             return Promise.reject('El periodo del contrato minimo es de 12 meses');
           }
         })

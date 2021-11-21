@@ -53,8 +53,10 @@ module.exports = {
     },
     nextExpire: (req, res) => {        
         invoiceModel.find({payed: false})
+        .populate('contract_id')
         .then(doc => responses.success(req, res, doc, RESPONSE_OK))
         .catch(err => {
+            console.log(err)
             return responses.success(req, res, err, BAD_REQUEST_ERROR);
         });                     
     }

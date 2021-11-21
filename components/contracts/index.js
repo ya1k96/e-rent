@@ -1,5 +1,5 @@
 const { DEFAULT_MESSAGE } = require('../../utils/messagesConstants');
-const { RESPONSE_OK_CREATED, RESPONSE_OK } = require('../../utils/constants');
+const { RESPONSE_OK_CREATED, RESPONSE_OK, BAD_REQUEST_ERROR } = require('../../utils/constants');
 
 const contractModel = require('./model');
 const responses = require('../../network/response');

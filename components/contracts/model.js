@@ -128,7 +128,8 @@ contractSchema.methods.newContract = (data) => new Promise((resolve,reject) =>
     };
 
     this.create(newContract, async (err, doc) => {
-        if(err) return reject(err);      
+        if(err) return reject(err);  
+        console.log(err)    
         //Creamos la primera factura del contrato
         await doc.firstInvoice();
         resolve(doc);
