@@ -9,9 +9,24 @@ module.exports = {
         {        
           const body = req.body;              
           try {
-            const doc = await contractModel.newContract(body);
-            return responses.error(req, res, doc, RESPONSE_OK_CREATED);            
+            let end = body.begin.split('-');
+            end[0] = parseInt(end[0]) + parseInt((body.months/12));
+            let newContract = {
+                name: body.name,
+                surname: body.lastname,
+                price: parseInt(body.price),
+                begin: new Date(body.begin),
+                end: new Date(end.join('/')),
+                increment_porc: parseInt(body.increment_porc) || 6,
+                increment_month: parseInt(body.increment_month)
+            };
+
+            const doc = await contractModel.create(newContract);
+            await doc.firstInvoice();            
+
+            return responses.success(req, res, doc, RESPONSE_OK_CREATED);            
           } catch (error) {
+            console.log(error)
             return responses.error(req, res, {msg: DEFAULT_MESSAGE}, BAD_REQUEST_ERROR);
           }          
         }
