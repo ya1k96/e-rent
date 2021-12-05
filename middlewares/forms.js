@@ -1,4 +1,4 @@
-const { check } = require('express-validator');
+const { check, validationResult } = require('express-validator');
 const { BAD_REQUEST_ERROR } = require('../utils/constants');
 
 module.exports = {
