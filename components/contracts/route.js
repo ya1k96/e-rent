@@ -1,4 +1,4 @@
-const { create, getById, update, remove } = require('.');
+const { create, getById, update, remove, getAll } = require('.');
 const { validContract } = require('./validation');
 const {notEmptyId} = require('../../middlewares/forms');
 
