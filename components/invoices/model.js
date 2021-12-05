@@ -34,15 +34,15 @@ const invoiceSchema = new Schema({
     timestamps: true
 });
 
-invoiceSchema.methods.invoiceDetail = (invoiceId) => {
-    return this.findById(invoiceId).populate(['contract_id','payment']);
-}
-invoiceSchema.methods.filter = (renter, from, until) => {
-    const regexp = new RegExp(renter, 'i');        
+// invoiceSchema.methods.invoiceDetail = (invoiceId) => {
+//     return this.findById(invoiceId).populate(['contract_id','payment']);
+// }
+// invoiceSchema.methods.filter = (renter, from, until) => {
+//     const regexp = new RegExp(renter, 'i');        
 
-    return this.find(find)      
-    .populate({path: "contract_id", match: {name: regexp}})            
-    .where('createdAt').gt(from).lt(until)
-}
+//     return this.find(find)      
+//     .populate({path: "contract_id", match: {name: regexp}})            
+//     .where('createdAt').gt(from).lt(until)
+// }
 
 module.exports = mongoose.model('invoices', invoiceSchema);

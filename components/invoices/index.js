@@ -1,5 +1,5 @@
 const invoiceModel = require('./model');
-const {moment} = require('../../utils/momentEs');
+const moment = require('moment');
 const { BAD_REQUEST_ERROR, BAD_GATEWAY, RESPONSE_OK } = require('../../utils/constants');
 const { ID_NOT_FOUND, DEFAULT_MESSAGE } = require('../../utils/messagesConstants');
 const responses = require('../../network/response');
@@ -42,13 +42,17 @@ module.exports = {
     getAll: async (req, res) => {
         let date = moment().format('YYYY-MM-DD');
         let find = {};
-        const from = req.query.from ? req.query.from: date;
-        const until = req.query.until ? req.query.until: date;    
-        const renter = req.query.renter;
+        const from = req.query.from || moment(date).subtract(1, 'M');
+        const until = req.query.until || date;
+        const renter = req.query.renter || '';
         
         if(req.query.payed === 'true') find.payed = true;
-        
-        const docs = await invoiceModel.all(renter, from, until);                                
+        const regexp = new RegExp(renter, 'i');        
+
+        const docs = await invoiceModel.find(find)      
+        .populate({path: "contract_id", match: {name: regexp}})            
+        .where('createdAt').gt(from).lt(until)
+                              
         return responses.success(req, res, docs, RESPONSE_OK);
     },
     nextExpire: (req, res) => {        
