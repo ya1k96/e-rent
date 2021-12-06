@@ -4,13 +4,8 @@ const path = require('path');
 const cors = require('cors')
 const db = require('./store/index');
 // const {serve, setup} = require('./doc/index');
-const authRoute = require('./components/auth/route');
-const usersRoute = require('./components/users/route');
-const contractsRoute = require('./components/contracts/route');
-const paymentsRoute = require('./components/payments/route');
-const invoicesRoute = require('./components/invoices/route');
-const {validateJwt} = require('./middlewares/validate-jwt');
 const agenda = require('./functions/agenda');
+const apiRouter = require('./components/route.index');
 //db connection method
 db.connect();
 
@@ -21,16 +16,11 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
+//definicion de ruta principal
+app.use('/api', apiRouter);
+
 const pathFile = path.join(__dirname, 'dist' );
 app.use(express.static(pathFile));
 
-// Routes
-// app.use('/api-docs', serve, setup);
-
-app.use('/api/auth', authRoute);
-app.use('/api/users', [validateJwt], usersRoute);
-app.use('/api/contracts', [validateJwt], contractsRoute);
-app.use('/api/invoices', [validateJwt], invoicesRoute);
-app.use('/api/payments', [validateJwt], paymentsRoute);
 
 module.exports = app;
