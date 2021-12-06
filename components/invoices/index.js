@@ -31,11 +31,10 @@ module.exports = {
     },
     getById: async (req, res) => {
         const id = req.params.id;
-        const doc = await invoiceModel.invoiceDetail(id);
+        //TODO: pasar luego al modelo
+        const doc = await invoiceModel.findById(id);
 
-        if(!doc) {
-            return responses.success(req, res, doc, RESPONSE_OK);
-        }
+        if(!doc) return responses.success(req, res, doc, RESPONSE_OK);
         
         return responses.success(req, res, ID_NOT_FOUND, BAD_REQUEST_ERROR);
     }, 
