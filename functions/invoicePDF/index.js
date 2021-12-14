@@ -34,6 +34,10 @@ module.exports = {
             items: [{
                 description: "Mes correspondiente a " + moment(invoice.createdAt).format("MMMM"),
                 price: payment.total
+            },
+            {
+                description: "Intereses por atraso en el pago",
+                price: payment.interest
             }],
             total: payment.total + payment.interest,
             order_number: payment._id,
