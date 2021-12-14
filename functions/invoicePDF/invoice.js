@@ -12,8 +12,8 @@ let invoice = (invoice, path) => {
     footer(doc, invoice);
   
     doc.end();
-    doc.pipe(fs.createWriteStream(path))
-    doc.on('end', function() {
+    const stream = doc.pipe(fs.createWriteStream(path))
+    stream.on('finish', function() {
       resolve();
     })
 

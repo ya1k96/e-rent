@@ -3,6 +3,7 @@ const moment = require('moment');
 const { BAD_REQUEST_ERROR, BAD_GATEWAY, RESPONSE_OK } = require('../../utils/constants');
 const { ID_NOT_FOUND, DEFAULT_MESSAGE } = require('../../utils/messagesConstants');
 const responses = require('../../network/response');
+const { getBucket } = require('../../functions/storage');
 
 const create = async (req, res) => {
     const body = req.body;
@@ -34,9 +35,21 @@ const remove = async (req, res) => {
 const getById = async (req, res) => {
     const id = req.params.id;
     //TODO: pasar luego al modelo
-    const doc = await invoiceModel.findById(id).populate('contract_id');
+    const doc = await invoiceModel.findById(id).populate(['contract_id', 'payment']);
     
-    if(doc) return responses.success(req, res, doc, RESPONSE_OK);
+    if(doc) {
+        console.log(doc)
+        if (!doc.payment?.doc_url) return responses.success(req, res, doc, RESPONSE_OK);
+        let bucket = await getBucket();
+        let file = bucket.file(doc.payment.doc_url);
+
+        const dateExp = new Date(); 
+        dateExp.setHours(dateExp.getHours() + 1);
+        const result = await file.getSignedUrl({ action: "read" , expires : dateExp});
+        doc.payment.doc_url = result[0];
+
+        return responses.success(req, res, doc, RESPONSE_OK);
+    };
     
     return responses.success(req, res, ID_NOT_FOUND, BAD_REQUEST_ERROR);
 }
