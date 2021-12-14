@@ -38,7 +38,6 @@ const getById = async (req, res) => {
     const doc = await invoiceModel.findById(id).populate(['contract_id', 'payment']);
     
     if(doc) {
-        console.log(doc)
         if (!doc.payment?.doc_url) return responses.success(req, res, doc, RESPONSE_OK);
         let bucket = await getBucket();
         let file = bucket.file(doc.payment.doc_url);
