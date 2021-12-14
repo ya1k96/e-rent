@@ -2,10 +2,11 @@ const getPDF = require('./invoice');
 const {getBucket} = require('../storage');
 const path = require('path');
 const fs = require('fs');
+const moment = require('moment');
 
 module.exports = {
-    generateInvoice: async (invoice, id_payment) => {
-        let documentPath = '';
+    generateInvoice: async (invoice, payment) => {
+        var documentPath = '';
         //Idealmente deberia tener los datos en el contrato
         //arreglar
         personInfo = {
@@ -18,8 +19,8 @@ module.exports = {
         };
 
         const billingDate = moment(invoice.payment.createdAt).format('L');
-        let documentName = `${id_payment}${personInfo.name}.pdf`;
-        let pathDocuments = path.resolve(__dirname, `../public/documents`);
+        var documentName = `${payment._id}${personInfo.name}.pdf`;
+        var pathDocuments = path.resolve(__dirname, `../../public/documents`);
         documentPath = `${pathDocuments}/${documentName}`;
 
         if(!fs.existsSync(pathDocuments)) {
@@ -27,37 +28,24 @@ module.exports = {
         }
 
         let bucket = await getBucket();
-        if(invoice.payment.doc_url) {
-            let doc = bucket.file(documentName);
-
-            const dateExp = new Date(); 
-            dateExp.setHours(dateExp.getHours() + 1);
-
-            const result = await doc.getSignedUrl({ action: "read" , expires : dateExp});
-            if(result.length == 0) {
-                return Promise.reject({success: false});
-            }
-
-            return Promise.resolve({url: result[0], success: true});
-        }
 
         const paymentDetail = {
             personInfo,
             items: [{
                 description: "Mes correspondiente a " + moment(invoice.createdAt).format("MMMM"),
-                price: invoice.payment.total
+                price: payment.total
             }],
-            total: invoice.payment.total + ((invoice.payment.interest/100) * invoice.payment.total),
-            order_number: id_payment,
+            total: payment.total + payment.interest,
+            order_number: payment._id,
             header:{
                 company_name: "",
-                company_logo: '../public/images/eRent_brand.png',
+                company_logo: '../../public/images/eRent_brand.png',
                 company_address: ""
             },
             footer:{
                 text: "",
                 owner: "Cañete Marisa Elizabeth",
-                pathSign: "../public/images/signField.jpg"
+                pathSign: "../../public/images/signField.jpg"
             },
             currency_symbol:"ARS", 
             date: {
@@ -67,28 +55,18 @@ module.exports = {
 
         getPDF(paymentDetail, documentPath)
         .then(() => {
-            if(fs.existsSync(documentPath)) {
-                bucket.upload(documentPath, {
+            bucket.upload(documentPath, {
                     destination: documentName,
                 }).then(async () => {
                     //Eliminamos el archivo pdf temporal
-                    fs.unlinkSync(documentPath);
-
-                    invoice.payment.doc_url = documentName;
-                    await invoice.payment.save();
+                    fs.unlinkSync(documentPath);        
                     
-                    let doc = bucket.file(documentName);
+                    payment.doc_url = documentName;
+                    await payment.save();
 
-                    const dateExp = new Date(); 
-                    dateExp.setHours(dateExp.getHours() + 1);
-
-                    const result = await doc.getSignedUrl({ action: "read" , expires : dateExp});
-                    return Promise.resolve({url: result[0], success: true});
+                    return Promise.resolve({success: true});
                 });
-            } else {
-                return Promise.reject({success: false});
-            }            
 
-        });
+        })
     }
 }

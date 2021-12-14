@@ -1,7 +1,6 @@
 const router = require('express').Router();
-const {payInvoice, generateInvoicePayed} = require('./index');
+const {payInvoice} = require('./index');
 
-router.post('/create/:id', payInvoice);
-router.post('/:id_invoice/:id_payment', generateInvoicePayed);
+router.get('/create/:id', payInvoice);
 
 module.exports = router;
