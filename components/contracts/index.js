@@ -40,7 +40,7 @@ module.exports = {
       }
     },
     getById: async (req, res) => {
-      const id = req.body.id;
+      const id = req.params.id;      
       try {
         const contract  = await contractModel.findById(id);
         return responses.success(req, res, contract, RESPONSE_OK);
@@ -49,7 +49,7 @@ module.exports = {
       }
     },
     remove: async (req, res) => {
-      const id = req.body.id;
+      const id = req.params.id;
       try {
         const contract  = await contractModel.findByIdAndRemove(id);
         return responses.success(req, res, contract, RESPONSE_OK);
