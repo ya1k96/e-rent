@@ -38,7 +38,6 @@ const getById = async (req, res) => {
     const doc = await invoiceModel.findById(id).populate(['contract_id', 'payment']);
     
     if(doc) {
-        console.log(doc)
         if (!doc.payment?.doc_url) return responses.success(req, res, doc, RESPONSE_OK);
         let bucket = await getBucket();
         let file = bucket.file(doc.payment.doc_url);
@@ -61,11 +60,11 @@ const getAll = async (req, res) => {
     const until = req.query.until || date;
     const renter = req.query.renter || '';
     
+    const regexp = new RegExp(renter, 'i');           
     if(req.query.payed === 'true') find.payed = true;
-    const regexp = new RegExp(renter, 'i');        
     
     const docs = await invoiceModel.find(find)      
-    .populate({path: "contract_id", match: {name: regexp}})            
+    .populate({path: "contract_id", 'contract_id.name': regexp})            
     .where('createdAt').gt(from).lt(until)
     
     return responses.success(req, res, docs, RESPONSE_OK);
